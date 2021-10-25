@@ -19,4 +19,20 @@ export class UsersService {
       data,
     });
   }
+
+  async modifyUser(
+    userWhereUniqueInput: Prisma.UserWhereUniqueInput,
+    data: Prisma.UserUpdateInput,
+  ): Promise<User> {
+    return this.prisma.user.update({
+      where: userWhereUniqueInput,
+      data: data,
+    });
+  }
+
+  async deleteUser(
+    userWhereUniqueInput: Prisma.UserWhereUniqueInput,
+  ): Promise<User> {
+    return this.prisma.user.delete({ where: userWhereUniqueInput });
+  }
 }
