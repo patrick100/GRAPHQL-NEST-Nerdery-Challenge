@@ -4,15 +4,18 @@ export const prisma = new PrismaClient({
 });
 
 import usersSeed from './seeds/users.seed';
+import categoriesSeed from './seeds/categories.seed';
+import productsSeed from './seeds/products.seed';
+import likeProductsSeed from './seeds/like-products.seed';
+import ordersSeed from './seeds/orders.seed';
 
 const main = async () => {
   console.log('Start seeding...');
   await usersSeed();
-  /*
-  await postsSeed();
-  await commentsSeed();
-  await reportsSeed();
-  await likesSeed(); */
+  await categoriesSeed();
+  await productsSeed();
+  await likeProductsSeed();
+  await ordersSeed();
   console.log('Finished seeding.');
 };
 

@@ -43,7 +43,7 @@ model Category {
 model Product {
   id              Int           @id @default(autoincrement())
   uuid            String        @unique @default(uuid()) @db.Uuid
-  name            String        @db.VarChar(50)
+  name            String        @db.VarChar(255)
   brand           String        @db.VarChar(50)
   description     String?       @db.Text
   categoryId      Int           @map("category_id")
@@ -53,7 +53,7 @@ model Product {
   unitPrice       Int           @map("unit_price")
   stock           Int?          @default(0)
   isEnabled       Boolean       @default(true) @map("is_enabled")
-  LikeCounter     Int?          @default(0) @map("like_counter")
+  likeCounter     Int?          @default(0) @map("like_counter")
   likeProducts    LikeProduct[]
   orderDetails    OrderDetail[]
   createdAt       DateTime      @default(now())
@@ -67,7 +67,7 @@ model LikeProduct {
   uuid      String  @unique @default(uuid()) @db.Uuid
   userId    Int     @map("user_id")
   user      User    @relation(fields: [userId], references: [id])
-  productId Int
+  productId Int     @map("product_id")
   product   Product @relation(fields: [productId], references: [id])
 
   @@map(name: "like_products")
@@ -92,7 +92,6 @@ model OrderDetail {
   uuid    String @unique @default(uuid()) @db.Uuid
   order   Order  @relation(fields: [orderId], references: [id])
   orderId Int
-
   product   Product @relation(fields: [productId], references: [id])
   productId Int
   unitPrice Int?    @default(0) @map("unit_price")
@@ -106,6 +105,8 @@ model BlackListToken {
   id        Int      @id @default(autoincrement())
   token     String
   expiredAt DateTime @default(now())
+
+  @@map(name: "black_list_token")
 }
 
 enum Role {
