@@ -1,29 +1,38 @@
 import { User } from '.prisma/client';
-import { Controller, Delete, Get, Param, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
 import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
+  // TODO use jwt token
+  @Get('me')
+  infoMeUser(@Body() userData: { id: number }): Promise<User> {
+    return this.userService.user(userData);
+  }
+
   @Get(':userId')
   infoUser(@Param('userId') userId: string): Promise<User> {
     return this.userService.user({ id: +userId });
   }
 
-  @Get('me')
   // TODO use jwt token
-  infoMeUser() {
-    return 'me action';
+  @Put(':userId')
+  modifyMeUser(
+    @Param('userId') userId: string,
+    @Body()
+    userData: {
+      firstName: string;
+      lastName: string;
+    },
+  ): Promise<User> {
+    return this.userService.modifyUser({ id: +userId }, userData);
   }
 
-  @Put('me')
-  modifyMeUser() {
-    return 'me action';
-  }
-
-  @Delete('me')
-  deleteMeUser() {
-    return 'delete me action';
+  // TODO use jwt token
+  @Delete(':userId')
+  deleteMeUser(@Param('userId') userId: string): Promise<User> {
+    return this.userService.deleteUser({ id: +userId });
   }
 }
