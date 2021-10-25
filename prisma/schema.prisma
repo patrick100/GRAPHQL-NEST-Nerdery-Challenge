@@ -15,7 +15,7 @@ model User {
   uuid                  String        @unique @default(uuid()) @db.Uuid
   firstName             String        @map("first_name") @db.VarChar(50)
   lastName              String        @map("last_name") @db.VarChar(50)
-  password              String        @db.VarChar(50)
+  password              String        @db.VarChar(120)
   email                 String        @unique @db.VarChar(50)
   emailVerifiedAt       DateTime?     @map("email_verified_at")
   role                  Role          @default(USER)
