@@ -14,23 +14,23 @@ export class UsersController {
   }
 
   @Get(':userId')
-  infoUser(@Param('userId') userId: string): Promise<User> {
+  infoUser(@Param('userId') userId: number): Promise<User> {
     return this.userService.user({ id: +userId });
   }
 
   // TODO use jwt token
   @Put(':userId')
   modifyMeUser(
-    @Param('userId') userId: string,
+    @Param('userId') userId: number,
     @Body()
     userData: ModifyUserDto,
   ): Promise<User> {
-    return this.userService.modifyUser({ id: +userId }, userData);
+    return this.userService.modifyUser({ id: userId }, userData);
   }
 
   // TODO use jwt token
   @Delete(':userId')
-  deleteMeUser(@Param('userId') userId: string): Promise<User> {
-    return this.userService.deleteUser({ id: +userId });
+  deleteMeUser(@Param('userId') userId: number): Promise<User> {
+    return this.userService.deleteUser({ id: userId });
   }
 }
