@@ -7,7 +7,7 @@ import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 export class CategoriesService {
   constructor(private prisma: PrismaService) {}
 
-  async category(params: PaginationQueryDto): Promise<Category[]> {
+  async categories(params: PaginationQueryDto): Promise<Category[]> {
     const { offset, limit, orderBy } = params;
     return this.prisma.category.findMany({
       skip: offset,

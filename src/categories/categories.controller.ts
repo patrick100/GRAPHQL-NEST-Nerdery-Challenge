@@ -21,7 +21,7 @@ export class CategoriesController {
   categories(
     @Query() paginationQuery: PaginationQueryDto,
   ): Promise<Category[]> {
-    return this.categoryService.category(paginationQuery);
+    return this.categoryService.categories(paginationQuery);
   }
 
   // TODO VerifyManager
