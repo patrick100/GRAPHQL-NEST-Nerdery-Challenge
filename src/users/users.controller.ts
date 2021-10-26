@@ -1,5 +1,6 @@
 import { User } from '.prisma/client';
 import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
+import { ModifyUserDto } from './dto/modify-user.dto';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -22,10 +23,7 @@ export class UsersController {
   modifyMeUser(
     @Param('userId') userId: string,
     @Body()
-    userData: {
-      firstName: string;
-      lastName: string;
-    },
+    userData: ModifyUserDto,
   ): Promise<User> {
     return this.userService.modifyUser({ id: +userId }, userData);
   }
