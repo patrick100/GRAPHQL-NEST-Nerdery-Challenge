@@ -8,11 +8,10 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { jwtConstants } from './constants';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { LocalStrategy } from './strategies/local.strategy';
 
 @Module({
   controllers: [AuthController],
-  providers: [UsersService, PrismaService, AuthService],
+  providers: [UsersService, PrismaService, AuthService, JwtStrategy],
   imports: [
     UsersModule,
     PassportModule,
