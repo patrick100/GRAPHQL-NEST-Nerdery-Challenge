@@ -7,6 +7,7 @@ export class UserDto {
 
   @Expose()
   readonly firstName: string;
+
   @Expose()
   readonly lastName: string;
 
