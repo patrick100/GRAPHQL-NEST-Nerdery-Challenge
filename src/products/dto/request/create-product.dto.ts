@@ -20,9 +20,8 @@ export class CreateProductDto {
   @IsString()
   readonly description?: string;
 
-  @IsInt()
-  @IsPositive()
-  readonly category: number;
+  @IsString()
+  readonly category: string;
 
   @IsOptional()
   @IsUrl()

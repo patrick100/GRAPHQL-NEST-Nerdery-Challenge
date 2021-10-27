@@ -13,50 +13,89 @@ import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { CreateProductDto } from './dto/request/create-product.dto';
 import { ModifyProductDto } from './dto/request/modify-product.dto';
 import { ProductsService } from './products.service';
+import { plainToClass } from 'class-transformer';
+import { ProductDto } from './dto/response/product.dto';
+import { ProductUserDto } from './dto/response/product-user.dto';
+import { QueueCollectionDto } from 'src/common/dto/queue-collection.dto';
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productService: ProductsService) {}
   @Get()
-  products(@Query() paginationQuery: PaginationQueryDto): Promise<Product[]> {
-    return this.productService.products(paginationQuery);
+  async products(
+    @Query() paginationQuery: PaginationQueryDto,
+  ): Promise<QueueCollectionDto> {
+    const products = await this.productService.products(paginationQuery);
+
+    return products;
   }
 
   @Get(':productId')
-  product(@Param('productId') productId: string): Promise<Product> {
-    return this.productService.product({ uuid: productId });
+  async product(
+    @Param('productId') productId: string,
+  ): Promise<ProductUserDto> {
+    const product = await this.productService.product({ uuid: productId });
+
+    return plainToClass(ProductUserDto, product);
   }
 
   // TODO VerifyManager
   @Post()
-  createProduct(@Body() productData: CreateProductDto): Promise<Product> {
-    return this.productService.createProduct(productData);
+  async createProduct(
+    @Body() productData: CreateProductDto,
+  ): Promise<ProductDto> {
+    const product = await this.productService.createProduct(productData);
+
+    return plainToClass(ProductDto, product);
   }
 
   // TODO VerifyManager
   @Patch(':productId')
-  modifyProduct(
+  async modifyProduct(
     @Param('productId') productId: string,
     @Body() productData: ModifyProductDto,
-  ): Promise<Product> {
-    return this.productService.modifyProduct({ uuid: productId }, productData);
+  ): Promise<ProductDto> {
+    const product = await this.productService.modifyProduct(
+      { uuid: productId },
+      productData,
+    );
+
+    return plainToClass(ProductDto, product);
   }
 
   // TODO VerifyManager
   @Delete(':productId')
-  deleteProduct(@Param('productId') productId: string): Promise<Product> {
-    return this.productService.deleteProduct({ uuid: productId });
+  async deleteProduct(
+    @Param('productId') productId: string,
+  ): Promise<ProductDto> {
+    const product = await this.productService.deleteProduct({
+      uuid: productId,
+    });
+
+    return plainToClass(ProductDto, product);
   }
 
   // TODO VerifyManager
   @Patch(':productId/enable')
-  enableProduct(@Param('productId') productId: string): Promise<Product> {
-    return this.productService.enableProduct({ uuid: productId });
+  async enableProduct(
+    @Param('productId') productId: string,
+  ): Promise<ProductDto> {
+    const product = await this.productService.enableProduct({
+      uuid: productId,
+    });
+
+    return plainToClass(ProductDto, product);
   }
 
   // TODO VerifyManager
   @Patch(':productId/disable')
-  disableProduct(@Param('productId') productId: string): Promise<Product> {
-    return this.productService.disableProduct({ uuid: productId });
+  async disableProduct(
+    @Param('productId') productId: string,
+  ): Promise<ProductDto> {
+    const product = await this.productService.disableProduct({
+      uuid: productId,
+    });
+
+    return plainToClass(ProductDto, product);
   }
 }

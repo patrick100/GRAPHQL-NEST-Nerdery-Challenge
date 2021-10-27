@@ -5,18 +5,42 @@ import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { CreateProductDto } from './dto/request/create-product.dto';
 import { ModifyProductDto } from './dto/request/modify-product.dto';
 import { _ } from 'lodash';
+import { PaginationService } from '../common/services/pagination.service';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { QueueCollectionDto } from 'src/common/dto/queue-collection.dto';
+import { plainToClass } from 'class-transformer';
+import { CategoriesService } from 'src/categories/categories.service';
 
 @Injectable()
 export class ProductsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private pagination: PaginationService,
+    private category: CategoriesService,
+  ) {}
 
-  async products(params: PaginationQueryDto): Promise<Product[]> {
-    const { offset, limit, orderBy } = params;
-    return this.prisma.product.findMany({
-      skip: offset,
-      take: limit,
-      orderBy,
-    });
+  async products(params: PaginationQueryDto): Promise<QueueCollectionDto> {
+    const { page, perPage } = params;
+    const { skip, take } = this.pagination.paginatedHelper(params);
+
+    const [count, data] = await Promise.all([
+      this.prisma.product.count(),
+
+      this.prisma.product.findMany({
+        skip: skip,
+        take: take,
+      }),
+    ]);
+
+    const pageInfo: PaginationDto = this.pagination.paginationSerializer(
+      count,
+      {
+        page,
+        perPage,
+      },
+    );
+
+    return plainToClass(QueueCollectionDto, { pageInfo, data });
   }
 
   async product(
@@ -28,9 +52,11 @@ export class ProductsService {
   }
 
   async createProduct(productData: CreateProductDto): Promise<Product> {
+    const { id } = await this.category.category({ uuid: productData.category });
+
     const data: Prisma.ProductCreateInput = {
       ...productData,
-      category: { connect: { id: productData.category } },
+      category: { connect: { id: id } },
     };
     return this.prisma.product.create({
       data,
@@ -41,11 +67,13 @@ export class ProductsService {
     productWhereUniqueInput: Prisma.ProductWhereUniqueInput,
     productData: ModifyProductDto,
   ): Promise<Product> {
+    const { id } = await this.category.category({ uuid: productData.category });
+
     let data: Prisma.ProductUpdateInput;
     if (productData.category) {
       data = {
         ...productData,
-        category: { connect: { id: productData.category } },
+        category: { connect: { id: id } },
       };
     } else {
       data = _.omit(productData, ['category']);

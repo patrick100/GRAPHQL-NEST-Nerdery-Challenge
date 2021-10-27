@@ -4,12 +4,12 @@ import { IsOptional, IsPositive } from 'class-validator';
 export class PaginationQueryDto {
   @IsOptional()
   @IsPositive()
-  offset?: number;
+  page?: number = 1;
 
   @IsOptional()
   @IsPositive()
-  limit?: number = 20;
+  perPage?: number = 2;
 
-  @IsOptional()
-  orderBy?: Prisma.CategoryOrderByWithRelationInput;
+  // @IsOptional()
+  // orderBy?: Prisma.CategoryOrderByWithRelationInput;
 }
