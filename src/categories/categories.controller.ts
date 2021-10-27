@@ -11,8 +11,8 @@ import {
 } from '@nestjs/common';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { CategoriesService } from './categories.service';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { ModifyCategoryDto } from './dto/modify-category.dto';
+import { CreateCategoryDto } from './dto/request/create-category.dto';
+import { ModifyCategoryDto } from './dto/request/modify-category.dto';
 
 @Controller('categories')
 export class CategoriesController {

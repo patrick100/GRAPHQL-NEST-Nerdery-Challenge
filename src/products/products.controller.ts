@@ -10,8 +10,8 @@ import {
   Query,
 } from '@nestjs/common';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
-import { CreateProductDto } from './dto/create-product.dto';
-import { ModifyProductDto } from './dto/modify-product.dto';
+import { CreateProductDto } from './dto/request/create-product.dto';
+import { ModifyProductDto } from './dto/request/modify-product.dto';
 import { ProductsService } from './products.service';
 
 @Controller('products')
