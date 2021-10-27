@@ -4,8 +4,10 @@ import { Exclude, Expose } from 'class-transformer';
 export class UserDto {
   @Expose()
   readonly uuid: string;
+
   @Expose()
   readonly firstName: string;
+
   @Expose()
   readonly lastName: string;
 
