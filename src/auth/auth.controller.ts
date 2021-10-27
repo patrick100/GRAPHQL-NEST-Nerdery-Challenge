@@ -16,6 +16,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { UserDto } from '../users/dto/response/user.dto';
 import { plainToClass } from 'class-transformer';
+import { SignInDto } from './dto/request/sign-in.dto';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller()
@@ -26,15 +27,19 @@ export class AuthController {
   ) {}
 
   @Post('sign-up')
-  async createUser(@Body() userData: CreateUserDto): Promise<UserDto> {
-    const user = await this.userService.createUser(userData);
+  async createUser(@Body() data: CreateUserDto): Promise<UserDto> {
+    const user = await this.userService.createUser(data);
+
     return plainToClass(UserDto, user);
   }
 
-  @UseGuards(LocalAuthGuard)
-  @Post('auth/login')
-  async login(@Request() req) {
-    return this.authService.login(req.user);
+  //@UseGuards(LocalAuthGuard)
+  @Post('sign-in')
+  async signIn(@Body() data: SignInDto) {
+    const authData = await this.authService.signIn(data);
+    const user = plainToClass(UserDto, authData.user);
+
+    return { user, token: authData.token };
   }
 
   @UseGuards(JwtAuthGuard)
