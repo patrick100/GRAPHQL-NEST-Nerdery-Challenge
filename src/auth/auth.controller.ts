@@ -6,8 +6,6 @@ import {
   Get,
   Request,
   UseGuards,
-  UseInterceptors,
-  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { CreateUserDto } from 'src/users/dto/request/create-user.dto';
 import { UsersService } from 'src/users/users.service';
@@ -18,7 +16,6 @@ import { UserDto } from '../users/dto/response/user.dto';
 import { plainToClass } from 'class-transformer';
 import { SignInDto } from './dto/request/sign-in.dto';
 
-@UseInterceptors(ClassSerializerInterceptor)
 @Controller()
 export class AuthController {
   constructor(
