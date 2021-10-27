@@ -1,5 +1,7 @@
 import { Prisma, User } from '.prisma/client';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreateUserDto } from './dto/request/create-user.dto';
 
@@ -21,9 +23,32 @@ export class UsersService {
   }
 
   async createUser(data: CreateUserDto): Promise<User> {
-    return await this.prisma.user.create({
-      data,
+    if (await this.prisma.user.count({ where: { email: data.email } })) {
+      throw new HttpException(
+        'Email already taken',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    const emailVerifiedToken = crypto.randomBytes(12).toString('hex');
+    const user = await this.prisma.user.create({
+      data: {
+        ...data,
+        password: hashedPassword,
+        emailVerifiedToken: emailVerifiedToken,
+      },
     });
+
+    /* 
+      const emailData: Email = {
+      email: user.email,
+      subject: 'Confirm Email',
+      body: `Send this request via PATCH: ${URL_BASE}/verify-email/${user.uuid}/${tokenVerifyEmail}`,
+    };
+    sendEmail(emailData);
+    */
+    return user;
   }
 
   async modifyUser(
