@@ -17,7 +17,9 @@ import { plainToClass } from 'class-transformer';
 import { ProductDto } from './dto/response/product.dto';
 import { ProductUserDto } from './dto/response/product-user.dto';
 import { QueueCollectionDto } from 'src/common/dto/queue-collection.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Products')
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productService: ProductsService) {}

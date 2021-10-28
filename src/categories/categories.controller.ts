@@ -9,6 +9,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { QueueCollectionDto } from 'src/common/dto/queue-collection.dto';
@@ -17,6 +18,7 @@ import { CreateCategoryDto } from './dto/request/create-category.dto';
 import { ModifyCategoryDto } from './dto/request/modify-category.dto';
 import { CategoryDto } from './dto/response/category.dto';
 
+@ApiTags('Categories')
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoryService: CategoriesService) {}
