@@ -21,7 +21,10 @@ export class TransformInterceptor<T>
   ): Observable<Response<T>> {
     return next.handle().pipe(
       map((data) => {
-        if (data.constructor.name === 'QueueCollectionDto') {
+        if (
+          data !== undefined &&
+          data.constructor.name === 'QueueCollectionDto'
+        ) {
           return data;
         } else {
           return { data };

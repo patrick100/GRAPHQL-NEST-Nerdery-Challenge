@@ -15,7 +15,11 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { UserDto } from '../users/dto/response/user.dto';
 import { plainToClass } from 'class-transformer';
 import { SignInDto } from './dto/request/sign-in.dto';
+import { ApiTags } from '@nestjs/swagger';
+import { PasswordResetDto } from './dto/request/password-reset.dto';
+import { VerifyPasswordResetDto } from './dto/request/verify-password-reset.dto';
 
+@ApiTags('Auth')
 @Controller()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -47,7 +51,7 @@ export class AuthController {
 
   @Patch('password-reset')
   @HttpCode(204)
-  async passwordReset(@Body() data) {
+  async passwordReset(@Body() data: PasswordResetDto) {
     return await this.authService.passwordReset(data.email);
   }
 
@@ -56,9 +60,13 @@ export class AuthController {
   async verifyPasswordReset(
     @Param('uuid') uuid: string,
     @Param('token') token: string,
-    @Body() data,
+    @Body() data: VerifyPasswordResetDto,
   ) {
-    return await this.authService.verifyPasswordReset(uuid, token, data.email);
+    return await this.authService.verifyPasswordReset(
+      uuid,
+      token,
+      data.password,
+    );
   }
 
   @UseGuards(JwtAuthGuard)
