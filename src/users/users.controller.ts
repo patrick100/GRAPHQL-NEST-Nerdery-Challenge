@@ -4,7 +4,9 @@ import { ModifyUserDto } from './dto/request/modify-user.dto';
 import { UsersService } from './users.service';
 import { plainToClass } from 'class-transformer';
 import { UserDto } from './dto/response/user.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly userService: UsersService) {}

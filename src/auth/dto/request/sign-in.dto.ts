@@ -1,13 +1,12 @@
-import { Expose, Exclude } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsString, Length } from 'class-validator';
 
-@Exclude()
 export class SignInDto {
-  @Expose()
+  @ApiProperty()
   @IsEmail()
   readonly email: string;
 
-  @Expose()
+  @ApiProperty()
   @IsString()
   @Length(6, 20)
   readonly password: string;
