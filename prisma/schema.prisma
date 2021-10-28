@@ -25,6 +25,7 @@ model User {
   updatedAt             DateTime?     @updatedAt @map("updated_at")
   likeProducts          LikeProduct[]
   orders                Order[]
+  tokens                Token[]
 
   @@map(name: "users")
 }
@@ -36,6 +37,8 @@ model Category {
   description String?   @db.Text
   isEnabled   Boolean   @default(true) @map("is_enabled")
   products    Product[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@map(name: "categories")
 }
@@ -69,6 +72,8 @@ model LikeProduct {
   user      User    @relation(fields: [userId], references: [id])
   productId Int     @map("product_id")
   product   Product @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map(name: "like_products")
 }
@@ -97,16 +102,21 @@ model OrderDetail {
   unitPrice Int?    @default(0) @map("unit_price")
   quantity  Int     @default(0)
   subtotal  Int?    @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map(name: "order_details")
 }
 
-model BlackListToken {
+model Token {
   id        Int      @id @default(autoincrement())
-  token     String
-  expiredAt DateTime @default(now())
+  token     String   @unique
+  user      User     @relation(fields: [userUuid], references: [uuid])
+  userUuid  String   @db.Uuid @map("user_uuid")
+  expiredAt String   @db.VarChar(5)
+  createdAt DateTime @default(now())
 
-  @@map(name: "black_list_token")
+  @@map(name: "tokens")
 }
 
 enum Role {

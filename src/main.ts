@@ -18,5 +18,6 @@ async function bootstrap() {
   app.useGlobalInterceptors(new TransformInterceptor());
   await app.listen(3000);
   console.log(`Application is running on: ${await app.getUrl()}`);
+  console.log(`Running in ${process.env.NODE_ENV} mode`);
 }
 bootstrap();
