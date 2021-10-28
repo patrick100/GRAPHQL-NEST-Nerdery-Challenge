@@ -6,6 +6,8 @@ import {
   Get,
   Request,
   UseGuards,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { CreateUserDto } from 'src/users/dto/request/create-user.dto';
 import { UsersService } from 'src/users/users.service';
@@ -14,8 +16,12 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { UserDto } from '../users/dto/response/user.dto';
 import { plainToClass } from 'class-transformer';
+<<<<<<< HEAD
 import { SignInDto } from './dto/request/sign-in.dto';
+=======
+>>>>>>> c0ed9d5... feat: add authentication response dto
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller()
 export class AuthController {
   constructor(

@@ -40,7 +40,7 @@ export class UsersService {
       },
     });
 
-    /* 
+    /*
       const emailData: Email = {
       email: user.email,
       subject: 'Confirm Email',
