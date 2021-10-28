@@ -75,6 +75,7 @@ model LikeProduct {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([userId, productId], name: "likeIdentifier")
   @@map(name: "like_products")
 }
 
