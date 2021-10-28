@@ -16,10 +16,8 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { UserDto } from '../users/dto/response/user.dto';
 import { plainToClass } from 'class-transformer';
-<<<<<<< HEAD
 import { SignInDto } from './dto/request/sign-in.dto';
-=======
->>>>>>> c0ed9d5... feat: add authentication response dto
+import { SignInDto } from './dto/request/sign-in.dto';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller()
@@ -43,6 +41,12 @@ export class AuthController {
     const user = plainToClass(UserDto, authData.user);
 
     return { user, token: authData.token };
+  }
+
+  @UseGuards(LocalAuthGuard)
+  @Post('auth/login')
+  async login(@Request() req) {
+    return this.authService.login(req.user);
   }
 
   @UseGuards(JwtAuthGuard)
