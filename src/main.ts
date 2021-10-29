@@ -3,6 +3,8 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { TransformInterceptor } from './utils/transform.interceptor';
+import { config } from 'aws-sdk';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,6 +19,13 @@ async function bootstrap() {
     }),
   );
   app.useGlobalInterceptors(new TransformInterceptor());
+
+  const configService = app.get(ConfigService);
+  config.update({
+    accessKeyId: String(configService.get('AWS_ACCESS_KEY_ID')),
+    secretAccessKey: String(configService.get('AWS_SECRET_ACCESS_KEY')),
+    region: configService.get('AWS_REGION'),
+  });
 
   const options = new DocumentBuilder()
     .setTitle('RAVN Nest Challenge')
