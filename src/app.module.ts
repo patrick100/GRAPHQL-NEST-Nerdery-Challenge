@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { CategoriesModule } from './categories/categories.module';
 import { ProductsModule } from './products/products.module';
 import { LikesModule } from './likes/likes.module';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { LikesModule } from './likes/likes.module';
     CategoriesModule,
     ProductsModule,
     LikesModule,
+    FilesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
