@@ -10,6 +10,7 @@ import { LikesModule } from './likes/likes.module';
 import { FilesModule } from './files/files.module';
 import { CartsModule } from './carts/carts.module';
 import { OrdersModule } from './orders/orders.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { OrdersModule } from './orders/orders.module';
     FilesModule,
     CartsModule,
     OrdersModule,
+    PrismaModule,
   ],
   controllers: [AppController],
   providers: [AppService],

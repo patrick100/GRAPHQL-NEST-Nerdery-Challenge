@@ -36,6 +36,7 @@ lerna-debug.log*
 
 # Environments
 .env
+.env.test
 
 # Prisma
 prisma/migrations
