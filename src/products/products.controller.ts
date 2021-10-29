@@ -10,6 +10,7 @@ import {
   Post,
   Query,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { CreateProductDto } from './dto/request/create-product.dto';
@@ -22,11 +23,16 @@ import { QueueCollectionDto } from 'src/common/dto/queue-collection.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ManagerGuard } from 'src/auth/guards/manager.guard';
+import { FilesService } from 'src/files/files.service';
+import { FileImageDto } from 'src/files/dto/response/file-image.dto';
 
 @ApiTags('Products')
 @Controller('products')
 export class ProductsController {
-  constructor(private readonly productService: ProductsService) {}
+  constructor(
+    private readonly productService: ProductsService,
+    private readonly fileService: FilesService,
+  ) {}
   @Get()
   async products(
     @Query() paginationQuery: PaginationQueryDto,
@@ -104,5 +110,28 @@ export class ProductsController {
     });
 
     return plainToClass(ProductDto, product);
+  }
+
+  @UseGuards(JwtAuthGuard, ManagerGuard)
+  @Patch(':productId/upload-img')
+  async uploadImgProduct(
+    @Request() req,
+    @Param('productId') productId: string,
+  ): Promise<FileImageDto> {
+    const fileImage = await this.fileService.generatePresignedUrl(
+      productId,
+      req.user.uuid,
+    );
+
+    return fileImage;
+  }
+
+  @Get(':productId/images')
+  async getImagesProduct(
+    @Param('productId') productId: string,
+  ): Promise<FileImageDto[]> {
+    const fileImages = await this.fileService.getImagesbyProductId(productId);
+
+    return fileImages;
   }
 }
