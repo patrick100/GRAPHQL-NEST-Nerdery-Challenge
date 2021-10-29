@@ -1,16 +1,19 @@
-import { Category } from '.prisma/client';
 import {
   Body,
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { ManagerGuard } from 'src/auth/guards/manager.guard';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { QueueCollectionDto } from 'src/common/dto/queue-collection.dto';
 import { CategoriesService } from './categories.service';
@@ -31,7 +34,8 @@ export class CategoriesController {
     return categories;
   }
 
-  // TODO VerifyManager
+  @UseGuards(JwtAuthGuard, ManagerGuard)
+  @HttpCode(201)
   @Post()
   async createCategory(
     @Body() categoryData: CreateCategoryDto,
@@ -41,7 +45,7 @@ export class CategoriesController {
     return plainToClass(CategoryDto, category);
   }
 
-  // TODO VerifyManager
+  @UseGuards(JwtAuthGuard, ManagerGuard)
   @Patch(':categoryId')
   async modifyCategory(
     @Param('categoryId') categoryId: string,
@@ -55,7 +59,8 @@ export class CategoriesController {
     return plainToClass(CategoryDto, category);
   }
 
-  // TODO VerifyManager
+  @UseGuards(JwtAuthGuard, ManagerGuard)
+  @HttpCode(204)
   @Delete(':categoryId')
   async deleteMeUser(
     @Param('categoryId') categoryId: string,
