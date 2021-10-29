@@ -1,5 +1,8 @@
 {
   "name": "nest-api-nerdery-challenge",
+  "engines": {
+    "node": ">=14.17.5"
+  },
   "version": "0.0.1",
   "description": "",
   "author": "",
