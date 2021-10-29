@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Prisma, User } from '.prisma/client';
 import { PrismaService } from 'prisma/prisma.service';
 
@@ -14,15 +14,23 @@ export class UsersService {
   async user(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
   ): Promise<User | null> {
-    return this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: userWhereUniqueInput,
     });
+    if (!user) {
+      throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
+    }
+
+    return user;
   }
 
   async modifyUser(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
     data: Prisma.UserUpdateInput,
   ): Promise<User> {
+    // user exists?
+    this.user(userWhereUniqueInput);
+
     return this.prisma.user.update({
       where: userWhereUniqueInput,
       data: data,
@@ -32,6 +40,9 @@ export class UsersService {
   async deleteUser(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
   ): Promise<User> {
+    // user exists?
+    this.user(userWhereUniqueInput);
+
     return this.prisma.user.delete({ where: userWhereUniqueInput });
   }
 }

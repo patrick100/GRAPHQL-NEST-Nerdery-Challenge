@@ -1,5 +1,5 @@
 import { Category, Prisma } from '.prisma/client';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { PrismaService } from 'prisma/prisma.service';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
@@ -56,6 +56,11 @@ export class CategoriesService {
     categoryWhereUniqueInput: Prisma.CategoryWhereUniqueInput,
     data: Prisma.CategoryUpdateInput,
   ): Promise<Category> {
+    const existCategory = await this.category(categoryWhereUniqueInput);
+    if (!existCategory) {
+      throw new HttpException('Category Not Found', HttpStatus.NOT_FOUND);
+    }
+
     return this.prisma.category.update({
       where: categoryWhereUniqueInput,
       data: data,
@@ -65,6 +70,11 @@ export class CategoriesService {
   async deleteCategory(
     categoryWhereUniqueInput: Prisma.CategoryWhereUniqueInput,
   ): Promise<Category> {
+    const existCategory = await this.category(categoryWhereUniqueInput);
+    if (!existCategory) {
+      throw new HttpException('Category Not Found', HttpStatus.NOT_FOUND);
+    }
+
     return this.prisma.category.delete({ where: categoryWhereUniqueInput });
   }
 }

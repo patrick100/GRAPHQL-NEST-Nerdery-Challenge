@@ -1,5 +1,5 @@
 import { Prisma, Product } from '.prisma/client';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { CreateProductDto } from './dto/request/create-product.dto';
@@ -46,9 +46,14 @@ export class ProductsService {
   async product(
     productWhereUniqueInput: Prisma.ProductWhereUniqueInput,
   ): Promise<Product | null> {
-    return this.prisma.product.findUnique({
+    const product = this.prisma.product.findUnique({
       where: productWhereUniqueInput,
     });
+    if (!product) {
+      throw new HttpException('Product Not Found', HttpStatus.NOT_FOUND);
+    }
+
+    return product;
   }
 
   async createProduct(productData: CreateProductDto): Promise<Product> {
@@ -67,13 +72,21 @@ export class ProductsService {
     productWhereUniqueInput: Prisma.ProductWhereUniqueInput,
     productData: ModifyProductDto,
   ): Promise<Product> {
-    const { id } = await this.category.category({ uuid: productData.category });
+    // product exists?
+    this.product(productWhereUniqueInput);
+
+    const category = await this.category.category({
+      uuid: productData.category,
+    });
+    if (!category) {
+      throw new HttpException('Category Not Found', HttpStatus.NOT_FOUND);
+    }
 
     let data: Prisma.ProductUpdateInput;
     if (productData.category) {
       data = {
         ...productData,
-        category: { connect: { id: id } },
+        category: { connect: { id: category.id } },
       };
     } else {
       data = _.omit(productData, ['category']);
@@ -88,6 +101,9 @@ export class ProductsService {
   async enableProduct(
     productWhereUniqueInput: Prisma.ProductWhereUniqueInput,
   ): Promise<Product> {
+    // product exists?
+    this.product(productWhereUniqueInput);
+
     const data: Prisma.ProductUpdateInput = {
       isEnabled: true,
     };
@@ -101,6 +117,9 @@ export class ProductsService {
   async disableProduct(
     productWhereUniqueInput: Prisma.ProductWhereUniqueInput,
   ): Promise<Product> {
+    // product exists?
+    this.product(productWhereUniqueInput);
+
     const data: Prisma.ProductUpdateInput = {
       isEnabled: false,
     };
@@ -114,6 +133,9 @@ export class ProductsService {
   async deleteProduct(
     productWhereUniqueInput: Prisma.ProductWhereUniqueInput,
   ): Promise<Product> {
+    // product exists?
+    this.product(productWhereUniqueInput);
+
     return this.prisma.product.delete({ where: productWhereUniqueInput });
   }
 }

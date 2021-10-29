@@ -4,10 +4,12 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { CreateProductDto } from './dto/request/create-product.dto';
@@ -18,6 +20,8 @@ import { ProductDto } from './dto/response/product.dto';
 import { ProductUserDto } from './dto/response/product-user.dto';
 import { QueueCollectionDto } from 'src/common/dto/queue-collection.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { ManagerGuard } from 'src/auth/guards/manager.guard';
 
 @ApiTags('Products')
 @Controller('products')
@@ -41,7 +45,8 @@ export class ProductsController {
     return plainToClass(ProductUserDto, product);
   }
 
-  // TODO VerifyManager
+  @UseGuards(JwtAuthGuard, ManagerGuard)
+  @HttpCode(201)
   @Post()
   async createProduct(
     @Body() productData: CreateProductDto,
@@ -51,7 +56,7 @@ export class ProductsController {
     return plainToClass(ProductDto, product);
   }
 
-  // TODO VerifyManager
+  @UseGuards(JwtAuthGuard, ManagerGuard)
   @Patch(':productId')
   async modifyProduct(
     @Param('productId') productId: string,
@@ -65,7 +70,7 @@ export class ProductsController {
     return plainToClass(ProductDto, product);
   }
 
-  // TODO VerifyManager
+  @UseGuards(JwtAuthGuard, ManagerGuard)
   @Delete(':productId')
   async deleteProduct(
     @Param('productId') productId: string,
@@ -77,7 +82,7 @@ export class ProductsController {
     return plainToClass(ProductDto, product);
   }
 
-  // TODO VerifyManager
+  @UseGuards(JwtAuthGuard, ManagerGuard)
   @Patch(':productId/enable')
   async enableProduct(
     @Param('productId') productId: string,
@@ -89,7 +94,7 @@ export class ProductsController {
     return plainToClass(ProductDto, product);
   }
 
-  // TODO VerifyManager
+  @UseGuards(JwtAuthGuard, ManagerGuard)
   @Patch(':productId/disable')
   async disableProduct(
     @Param('productId') productId: string,

@@ -1,33 +1,37 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
+  HttpCode,
   Param,
   Post,
   Put,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { DetailDto } from 'src/orders/dto/response/detail.dto';
 import { OrderWithDetailDto } from 'src/orders/dto/response/order-with-detail.dto';
 import { OrdersService } from 'src/orders/orders.service';
 import { ProductToCartDto } from './dto/request/product-to-cart.dto';
 
-// TODO Use JWT Token, replace Me in :userid
-@Controller('users/:userId/carts')
+@ApiTags('Carts')
+@Controller('users/me/carts')
 export class CartsController {
   constructor(private readonly orderService: OrdersService) {}
-  // TODO Use JWT Token
+  @UseGuards(JwtAuthGuard)
   @Get()
-  async cart(@Param('userId') userId: string): Promise<OrderWithDetailDto> {
-    const cart = await this.orderService.cartOfUser({ uuid: userId });
+  async cart(@Request() req): Promise<OrderWithDetailDto> {
+    const cart = await this.orderService.cartOfUser({ uuid: req.user.uuid });
 
     return cart;
   }
 
-  // TODO Use JWT Token
-  @Post('products')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(201)
+  @Post(':cartId/products')
   async productToCart(
-    @Param('userId') userId: string,
     @Param('cartId') cartId: string,
     @Body() productData: ProductToCartDto,
   ): Promise<DetailDto> {
@@ -39,10 +43,10 @@ export class CartsController {
     return detail;
   }
 
-  // TODO Use JWT Token
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(201)
   @Put(':cartId/orders')
   async cartToOrders(
-    @Param('userId') userId: string,
     @Param('cartId') cartUuid: string,
   ): Promise<OrderWithDetailDto> {
     return this.orderService.cartToOrders(cartUuid);

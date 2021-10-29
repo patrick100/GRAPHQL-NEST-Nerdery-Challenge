@@ -1,6 +1,7 @@
 import { Order, OrderDetail, Prisma } from '.prisma/client';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
+import e from 'express';
 import { PrismaService } from 'prisma/prisma.service';
 import { CartDto } from 'src/carts/dto/request/cart.dto';
 import { ProductToCartDto } from 'src/carts/dto/request/product-to-cart.dto';
@@ -16,9 +17,13 @@ export class OrdersService {
   async order(
     orderWhereUniqueInput: Prisma.OrderWhereUniqueInput,
   ): Promise<Order | null> {
-    return this.prisma.order.findUnique({
+    const order = await this.prisma.order.findUnique({
       where: orderWhereUniqueInput,
     });
+    if (!order) {
+      throw new HttpException('Order Not Found', HttpStatus.NOT_FOUND);
+    }
+    return order;
   }
 
   async cartOfUser(
@@ -69,33 +74,49 @@ export class OrdersService {
     cartUuid: string,
     productData: ProductToCartDto,
   ): Promise<OrderDetail> {
-    const { id: cartId } = await this.prisma.order.findUnique({
+    const cartId = await this.prisma.order.findUnique({
       where: {
         uuid: cartUuid,
       },
-    });
-    // get productId
-    const { id, unitPrice } = await this.prisma.product.findUnique({
-      where: {
-        uuid: productData.productId,
+      select: {
+        id: true,
       },
     });
 
+    if (!cartId) {
+      throw new HttpException('Cart Not Found', HttpStatus.NOT_FOUND);
+    }
+
+    // get productId
+    const product = await this.prisma.product.findUnique({
+      where: {
+        uuid: productData.productId,
+      },
+      select: {
+        id: true,
+        unitPrice: true,
+      },
+    });
+
+    if (!product) {
+      throw new HttpException('Product Not Found', HttpStatus.NOT_FOUND);
+    }
+
     const data: Prisma.OrderDetailCreateInput = {
-      order: { connect: { id: cartId } },
-      product: { connect: { id: id } },
+      order: { connect: { id: cartId.id } },
+      product: { connect: { id: product.id } },
       quantity: productData.quantity,
-      unitPrice: unitPrice,
-      subtotal: unitPrice * productData.quantity,
+      unitPrice: product.unitPrice,
+      subtotal: product.unitPrice * productData.quantity,
     };
     // update totalprice in cart
     const totalPrice = await this.prisma.order.update({
       where: {
-        id: cartId,
+        id: cartId.id,
       },
       data: {
         totalPrice: {
-          increment: unitPrice * productData.quantity,
+          increment: product.unitPrice * productData.quantity,
         },
       },
     });
@@ -115,12 +136,16 @@ export class OrdersService {
       },
     });
 
+    if (!newOrder) {
+      throw new HttpException('Cart Not Found', HttpStatus.NOT_FOUND);
+    }
+
     const cartDetail = await this.cartDetail({ orderId: newOrder.id });
 
     return plainToClass(OrderWithDetailDto, { newOrder, cartDetail });
   }
 
-  async userOrders(userId: string): Promise<OrdersDto[]> {
+  async userOrders(userId: string): Promise<OrderDto[]> {
     const { id } = await this.user.user({ uuid: userId });
 
     const cart = await this.prisma.order.findMany({
@@ -129,7 +154,7 @@ export class OrdersService {
       },
     });
 
-    return plainToClass(OrdersDto, cart);
+    return plainToClass(OrderDto, cart);
   }
 
   async orderDetail(
