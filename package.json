@@ -17,7 +17,7 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest",
+    "test": "npx dotenv -e .env.test -- jest --runInBand",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
@@ -54,6 +54,7 @@
     "@nestjs/testing": "^8.0.0",
     "@types/bcrypt": "^5.0.0",
     "@types/express": "^4.17.13",
+    "@types/faker": "^5.5.9",
     "@types/jest": "^27.0.1",
     "@types/node": "^16.0.0",
     "@types/passport-jwt": "^3.0.6",
@@ -64,6 +65,7 @@
     "eslint": "^8.0.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "faker": "^5.5.3",
     "jest": "^27.2.5",
     "prettier": "^2.3.2",
     "prisma": "3.3.0",
@@ -90,6 +92,11 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleDirectories": [
+      "node_modules",
+      "src",
+      "."
+    ]
   }
 }
