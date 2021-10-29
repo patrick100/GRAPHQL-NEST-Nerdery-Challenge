@@ -4,7 +4,6 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 import { UsersService } from 'src/users/users.service';
 import { OrdersService } from './orders.service';
 import * as faker from 'faker';
-import { fake } from 'faker';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { Order, Status, User } from '.prisma/client';
 import { UserFactory } from 'src/common/factories/user.factory';
