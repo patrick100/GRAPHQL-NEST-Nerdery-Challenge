@@ -23,7 +23,7 @@ export class OrderFactory extends AbstractFactory<Order> {
       data: {
         uuid: faker.datatype.uuid(),
         createdAt: faker.datatype.datetime(),
-        clientId: { connect: { id: faker.datatype.number() } },
+        clientId: input.clientId,
         totalPrice: faker.datatype.number(),
       },
     });

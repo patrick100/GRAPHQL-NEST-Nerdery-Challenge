@@ -38,17 +38,18 @@ export class OrdersService {
         status: 'ONCART',
       },
     });
+    let detail: OrderDetail;
 
     if (cart) {
       // get cart detail
-      const cartDetail = await this.cartDetail({ orderId: cart.id });
+      const detail = await this.cartDetail({ orderId: cart.id });
 
-      return plainToClass(OrderWithDetailDto, { cart, cartDetail });
+      return plainToClass(OrderWithDetailDto, { cart, detail });
     } else {
       // create new cart
       const newCart = await this.createCart({ userId: id });
 
-      return plainToClass(OrderWithDetailDto, { newCart });
+      return plainToClass(OrderWithDetailDto, { newCart, detail });
     }
   }
 
