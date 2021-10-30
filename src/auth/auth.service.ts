@@ -5,7 +5,7 @@ import * as crypto from 'crypto';
 import { PrismaService } from 'prisma/prisma.service';
 import { UsersService } from 'src/users/users.service';
 import { SignInDto } from './dto/request/sign-in.dto';
-import AuthData from '../interfaces/authData.interface';
+import AuthData from '../interfaces/auth-data.interface';
 import { Token, User } from '@prisma/client';
 import { CreateUserDto } from 'src/users/dto/request/create-user.dto';
 import { sendEmail } from '../utils/email';
