@@ -9,7 +9,6 @@ import { ProductsService } from './products.service';
 import * as faker from 'faker';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
-import { connect } from 'http2';
 import { CreateProductDto } from './dto/request/create-product.dto';
 
 describe('ProductsService', () => {

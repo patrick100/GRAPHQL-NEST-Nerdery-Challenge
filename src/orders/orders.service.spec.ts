@@ -9,7 +9,6 @@ import {
   Category,
   Order,
   OrderDetail,
-  Prisma,
   Product,
   Status,
   User,
@@ -22,7 +21,6 @@ import { CategoryFactory } from 'src/common/factories/category.factory';
 import { OrderWithDetailDto } from './dto/response/order-with-detail.dto';
 import { plainToClass } from 'class-transformer';
 import { CartDto } from 'src/carts/dto/request/cart.dto';
-import { number } from 'joi';
 import { ProductToCartDto } from 'src/carts/dto/request/product-to-cart.dto';
 
 describe('OrdersService', () => {
@@ -90,7 +88,7 @@ describe('OrdersService', () => {
   });
 
   afterAll(async () => {
-    // await prismaService.clearDatabase();
+    await prismaService.clearDatabase();
     await prismaService.$disconnect();
     // await module.close();
   });
@@ -181,6 +179,90 @@ describe('OrdersService', () => {
       ).rejects.toThrowError(
         new HttpException('Cart Not Found', HttpStatus.NOT_FOUND),
       );
+    });
+
+    it('should throw an exception if product doesnt exist', async () => {
+      const productData = {
+        orderId: orderTest.uuid,
+        productId: faker.datatype.uuid(),
+        quantity: faker.datatype.number(),
+      };
+      await expect(
+        orderService.addProductToCart(orderTest.uuid, productData),
+      ).rejects.toThrowError(
+        new HttpException('Product Not Found', HttpStatus.NOT_FOUND),
+      );
+    });
+
+    it('should create/add an order detail', async () => {
+      const spy = jest.spyOn(prismaService.orderDetail, 'create');
+      const data: ProductToCartDto = {
+        orderId: orderTest.uuid,
+        productId: productTest.uuid,
+        quantity: 2,
+      };
+
+      await orderService.addProductToCart(orderTest.uuid, data);
+
+      expect(spy).toBeCalledWith({
+        data: {
+          order: { connect: { id: orderTest.id } },
+          product: { connect: { id: productTest.id } },
+          unitPrice: productTest.unitPrice,
+          quantity: 2,
+          subtotal: productTest.unitPrice * 2,
+        },
+      });
+    });
+  });
+
+  describe('cartToOrders', () => {
+    it('should throw an exception if cart doesnt exist', async () => {
+      await expect(
+        orderService.cartToOrders(faker.datatype.uuid()),
+      ).rejects.toThrowError(
+        new HttpException('Cart Not Found', HttpStatus.NOT_FOUND),
+      );
+    });
+
+    it('should update cart status from ONCART to ORDERED', async () => {
+      const orderUpdated = await orderService.cartToOrders(orderTest.uuid);
+      expect(orderUpdated.order.status).toEqual(Status.ORDERED);
+    });
+  });
+
+  describe('userOrders', () => {
+    it('should throw an exception if user doesnt exist', async () => {
+      await expect(
+        orderService.userOrders(faker.datatype.uuid()),
+      ).rejects.toThrowError(
+        new HttpException('User Not Found', HttpStatus.NOT_FOUND),
+      );
+    });
+
+    it('should retrieve a list of orders from a user', async () => {
+      const orders = await orderService.userOrders(userTest.uuid);
+
+      orders.forEach((element) => {
+        expect(element.userId).toBe(userTest.id);
+      });
+    });
+  });
+
+  describe('orderDetail', () => {
+    it('should throw an exception if order doesnt exist', async () => {
+      await expect(
+        orderService.orderDetail(faker.datatype.uuid()),
+      ).rejects.toThrowError(
+        new HttpException('Order Not Found', HttpStatus.NOT_FOUND),
+      );
+    });
+
+    it('should retrieve the order detail', async () => {
+      // const data = await orderService.orderDetail(orderTest.uuid);
+      const order = await orderService.orderDetail(orderTest.uuid);
+
+      expect(order.detail[0].orderId).toBe(orderTest.id);
     });
   });
 });

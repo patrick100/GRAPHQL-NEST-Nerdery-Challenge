@@ -22,21 +22,40 @@ export class ProductsService {
   async products(params: PaginationQueryDto): Promise<QueueCollectionDto> {
     const { page, perPage, category } = params;
     const { skip, take } = this.pagination.paginatedHelper(params);
-    // find categoryId
-    const categoryRetrieve = await this.categoryService.category({
-      uuid: category,
-    });
-    const [count, data] = await Promise.all([
-      this.prisma.product.count(),
 
-      this.prisma.product.findMany({
-        skip: skip,
-        take: take,
-        where: {
-          categoryId: categoryRetrieve.id,
-        },
-      }),
-    ]);
+    let count: number;
+    let data: Product[];
+
+    // find categoryId
+    if (category) {
+      const categoryRetrieve = await this.categoryService.category({
+        uuid: category,
+      });
+      [count, data] = await Promise.all([
+        this.prisma.product.count({
+          where: {
+            categoryId: categoryRetrieve.id,
+          },
+        }),
+
+        this.prisma.product.findMany({
+          skip: skip,
+          take: take,
+          where: {
+            categoryId: categoryRetrieve.id,
+          },
+        }),
+      ]);
+    } else {
+      [count, data] = await Promise.all([
+        this.prisma.product.count({}),
+
+        this.prisma.product.findMany({
+          skip: skip,
+          take: take,
+        }),
+      ]);
+    }
 
     const pageInfo: PaginationDto = this.pagination.paginationSerializer(
       count,

@@ -128,6 +128,19 @@ export class OrdersService {
   }
 
   async cartToOrders(cartId: string): Promise<OrderWithDetailDto> {
+    const cartExists = await this.prisma.order.findUnique({
+      where: {
+        uuid: cartId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!cartExists) {
+      throw new HttpException('Cart Not Found', HttpStatus.NOT_FOUND);
+    }
+
     const newOrder = await this.prisma.order.update({
       where: {
         uuid: cartId,
@@ -137,32 +150,35 @@ export class OrdersService {
       },
     });
 
-    if (!newOrder) {
-      throw new HttpException('Cart Not Found', HttpStatus.NOT_FOUND);
-    }
-
     const cartDetail = await this.cartDetail({ orderId: newOrder.id });
 
-    return plainToClass(OrderWithDetailDto, { newOrder, cartDetail });
+    return plainToClass(OrderWithDetailDto, {
+      order: newOrder,
+      detail: cartDetail,
+    });
   }
 
   async userOrders(userId: string): Promise<OrderDto[]> {
-    const { id } = await this.user.user({ uuid: userId });
+    const user = await this.user.user({ uuid: userId });
+    if (!user) {
+      throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
+    }
 
     const cart = await this.prisma.order.findMany({
       where: {
-        userId: id,
+        userId: user.id,
       },
     });
 
     return plainToClass(OrderDto, cart);
   }
 
-  async orderDetail(
-    userId: string,
-    orderId: string,
-  ): Promise<OrderWithDetailDto> {
+  async orderDetail(orderId: string): Promise<OrderWithDetailDto> {
     const order = await this.order({ uuid: orderId });
+    if (!order) {
+      throw new HttpException('Order Not Found', HttpStatus.NOT_FOUND);
+    }
+
     const detail = await this.cartDetail({ orderId: order.id });
 
     return plainToClass(OrderWithDetailDto, { order, detail });
