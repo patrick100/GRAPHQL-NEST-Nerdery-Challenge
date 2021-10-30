@@ -28,4 +28,8 @@ export class OrderFactory extends AbstractFactory<Order> {
       },
     });
   }
+
+  async makeMany(factorial: number, input: OrderInput = {}): Promise<Order[]> {
+    return Promise.all([...Array(factorial)].map(() => this.make(input)));
+  }
 }

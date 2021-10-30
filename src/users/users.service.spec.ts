@@ -26,6 +26,12 @@ describe('UsersService', () => {
     userTest = await userFactory.make({});
   });
 
+  afterAll(async () => {
+    // await prismaService.clearDatabase();
+    await prismaService.$disconnect();
+    // await module.close();
+  });
+
   it('should be defined', () => {
     expect(userService).toBeDefined();
   });
@@ -39,14 +45,60 @@ describe('UsersService', () => {
       );
     });
 
-    // it('should create a new user', async () => {
-    //   await expect(userService.user());
-    // });
-
     it('should retrieve user info', async () => {
       const user = await userService.user({ uuid: userTest.uuid });
 
       expect(user).toEqual(userTest);
+    });
+  });
+
+  describe('findOne', () => {
+    it('should retrieve user info from uuid', async () => {
+      const user = await userService.findOne(userTest.uuid);
+
+      expect(user).toEqual(userTest);
+    });
+  });
+
+  describe('modifyUser', () => {
+    it('should throw an exception if user doesnt exist', async () => {
+      const data = {};
+      await expect(
+        userService.modifyUser({ uuid: faker.datatype.uuid() }, data),
+      ).rejects.toThrowError(
+        new HttpException('User Not Found', HttpStatus.NOT_FOUND),
+      );
+    });
+
+    it('should modify user info', async () => {
+      const data: Partial<User> = { firstName: 'New test name' };
+
+      await expect(
+        userService.modifyUser({ uuid: userTest.uuid }, data),
+      ).resolves.toEqual({ ...userTest, ...data, updatedAt: expect.any(Date) });
+    });
+  });
+
+  describe('deleteUser', () => {
+    it('should throw an exception if user doesnt exist', async () => {
+      await expect(
+        userService.deleteUser({ uuid: faker.datatype.uuid() }),
+      ).rejects.toThrowError(
+        new HttpException('User Not Found', HttpStatus.NOT_FOUND),
+      );
+    });
+
+    it('should delete the user', async () => {
+      const spy = jest.spyOn(prismaService.user, 'delete');
+      const tempUuid = userTest.uuid;
+
+      await userService.deleteUser({ uuid: userTest.uuid });
+
+      expect(spy).toBeCalledWith({
+        where: {
+          uuid: tempUuid,
+        },
+      });
     });
   });
 });

@@ -29,7 +29,12 @@ export class UsersService {
     data: Prisma.UserUpdateInput,
   ): Promise<User> {
     // user exists?
-    this.user(userWhereUniqueInput);
+    const user = await this.prisma.user.findUnique({
+      where: userWhereUniqueInput,
+    });
+    if (!user) {
+      throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
+    }
 
     return this.prisma.user.update({
       where: userWhereUniqueInput,
@@ -41,7 +46,12 @@ export class UsersService {
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
   ): Promise<User> {
     // user exists?
-    this.user(userWhereUniqueInput);
+    const user = await this.prisma.user.findUnique({
+      where: userWhereUniqueInput,
+    });
+    if (!user) {
+      throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
+    }
 
     return this.prisma.user.delete({ where: userWhereUniqueInput });
   }

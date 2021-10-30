@@ -25,4 +25,8 @@ export class UserFactory extends AbstractFactory<User> {
       },
     });
   }
+
+  async makeMany(factorial: number, input: UserInput = {}): Promise<User[]> {
+    return Promise.all([...Array(factorial)].map(() => this.make(input)));
+  }
 }
