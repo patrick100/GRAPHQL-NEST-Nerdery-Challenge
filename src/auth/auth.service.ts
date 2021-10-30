@@ -109,7 +109,7 @@ export class AuthService {
     });
   }
 
-  async passwordReset(email: string): Promise<void> {
+  async sendTokenToResetPassword(email: string): Promise<void> {
     const user = await this.prisma.user.findUnique({ where: { email: email } });
     if (!user) {
       throw new HttpException('Not Found User', HttpStatus.NOT_FOUND);
@@ -131,7 +131,7 @@ export class AuthService {
     });
   }
 
-  async verifyPasswordReset(
+  async ResetPassword(
     uuid: string,
     token: string,
     password: string,
