@@ -53,10 +53,7 @@ describe('LikesService', () => {
   });
 
   afterAll(async () => {
-    await prisma.likeProduct.deleteMany({});
-    await prisma.product.deleteMany({});
-    await prisma.category.deleteMany({});
-    await prisma.user.deleteMany({});
+    await prisma.clearDatabase();
     await prisma.$disconnect();
   });
 
