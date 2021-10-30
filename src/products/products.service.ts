@@ -16,19 +16,25 @@ export class ProductsService {
   constructor(
     private prisma: PrismaService,
     private pagination: PaginationService,
-    private category: CategoriesService,
+    private categoryService: CategoriesService,
   ) {}
 
   async products(params: PaginationQueryDto): Promise<QueueCollectionDto> {
-    const { page, perPage } = params;
+    const { page, perPage, category } = params;
     const { skip, take } = this.pagination.paginatedHelper(params);
-
+    // find categoryId
+    const categoryRetrieve = await this.categoryService.category({
+      uuid: category,
+    });
     const [count, data] = await Promise.all([
       this.prisma.product.count(),
 
       this.prisma.product.findMany({
         skip: skip,
         take: take,
+        where: {
+          categoryId: categoryRetrieve.id,
+        },
       }),
     ]);
 
@@ -57,7 +63,9 @@ export class ProductsService {
   }
 
   async createProduct(productData: CreateProductDto): Promise<Product> {
-    const { id } = await this.category.category({ uuid: productData.category });
+    const { id } = await this.categoryService.category({
+      uuid: productData.category,
+    });
 
     const data: Prisma.ProductCreateInput = {
       ...productData,
@@ -82,7 +90,7 @@ export class ProductsService {
     let category: Category;
 
     if (productData.category) {
-      category = await this.category.category({
+      category = await this.categoryService.category({
         uuid: productData.category,
       });
       if (!category) {

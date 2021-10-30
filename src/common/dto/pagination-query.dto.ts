@@ -1,5 +1,5 @@
 import { Prisma } from '.prisma/client';
-import { IsOptional, IsPositive } from 'class-validator';
+import { IsOptional, IsPositive, IsUUID } from 'class-validator';
 
 export class PaginationQueryDto {
   @IsOptional()
@@ -10,6 +10,7 @@ export class PaginationQueryDto {
   @IsPositive()
   perPage?: number = 2;
 
-  // @IsOptional()
-  // orderBy?: Prisma.CategoryOrderByWithRelationInput;
+  @IsOptional()
+  @IsUUID()
+  category?: string;
 }
