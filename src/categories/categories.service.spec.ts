@@ -11,6 +11,7 @@ describe('CategoriesService', () => {
   let prismaService: PrismaService;
   let categoryFactory: CategoryFactory;
   let categoryTest: Category;
+  let arrayCategoryTest: Category[];
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -23,6 +24,7 @@ describe('CategoriesService', () => {
     categoryFactory = module.get<CategoryFactory>(CategoryFactory);
 
     categoryTest = await categoryFactory.make({});
+    arrayCategoryTest = await categoryFactory.makeMany(5, {});
   });
 
   it('should be defined', () => {
@@ -39,9 +41,14 @@ describe('CategoriesService', () => {
     });
   });
 
-  // describe('categories', () => {
-  //   it('should return a list of categories', async () => {});
-  // });
+  describe('categories', () => {
+    it('should return a list of categories', async () => {
+      const data = await categoriesService.categories({ page: 1, perPage: 1 });
+      const categories = await prismaService.category.findMany({});
+
+      expect(categories).toHaveLength(Number(data.pageInfo.total));
+    });
+  });
 
   describe('createCategory', () => {
     it('should create a category', async () => {

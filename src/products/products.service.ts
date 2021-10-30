@@ -1,4 +1,4 @@
-import { Prisma, Product } from '.prisma/client';
+import { Category, Prisma, Product } from '.prisma/client';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
@@ -46,7 +46,7 @@ export class ProductsService {
   async product(
     productWhereUniqueInput: Prisma.ProductWhereUniqueInput,
   ): Promise<Product | null> {
-    const product = this.prisma.product.findUnique({
+    const product = await this.prisma.product.findUnique({
       where: productWhereUniqueInput,
     });
     if (!product) {
@@ -72,14 +72,22 @@ export class ProductsService {
     productWhereUniqueInput: Prisma.ProductWhereUniqueInput,
     productData: ModifyProductDto,
   ): Promise<Product> {
-    // product exists?
-    this.product(productWhereUniqueInput);
-
-    const category = await this.category.category({
-      uuid: productData.category,
+    const product = await this.prisma.product.findUnique({
+      where: productWhereUniqueInput,
     });
-    if (!category) {
-      throw new HttpException('Category Not Found', HttpStatus.NOT_FOUND);
+    if (!product) {
+      throw new HttpException('Product Not Found', HttpStatus.NOT_FOUND);
+    }
+
+    let category: Category;
+
+    if (productData.category) {
+      category = await this.category.category({
+        uuid: productData.category,
+      });
+      if (!category) {
+        throw new HttpException('Category Not Found', HttpStatus.NOT_FOUND);
+      }
     }
 
     let data: Prisma.ProductUpdateInput;
@@ -102,7 +110,12 @@ export class ProductsService {
     productWhereUniqueInput: Prisma.ProductWhereUniqueInput,
   ): Promise<Product> {
     // product exists?
-    this.product(productWhereUniqueInput);
+    const product = await this.prisma.product.findUnique({
+      where: productWhereUniqueInput,
+    });
+    if (!product) {
+      throw new HttpException('Product Not Found', HttpStatus.NOT_FOUND);
+    }
 
     const data: Prisma.ProductUpdateInput = {
       isEnabled: true,
@@ -118,7 +131,12 @@ export class ProductsService {
     productWhereUniqueInput: Prisma.ProductWhereUniqueInput,
   ): Promise<Product> {
     // product exists?
-    this.product(productWhereUniqueInput);
+    const product = await this.prisma.product.findUnique({
+      where: productWhereUniqueInput,
+    });
+    if (!product) {
+      throw new HttpException('Product Not Found', HttpStatus.NOT_FOUND);
+    }
 
     const data: Prisma.ProductUpdateInput = {
       isEnabled: false,
@@ -134,7 +152,12 @@ export class ProductsService {
     productWhereUniqueInput: Prisma.ProductWhereUniqueInput,
   ): Promise<Product> {
     // product exists?
-    this.product(productWhereUniqueInput);
+    const product = await this.prisma.product.findUnique({
+      where: productWhereUniqueInput,
+    });
+    if (!product) {
+      throw new HttpException('Product Not Found', HttpStatus.NOT_FOUND);
+    }
 
     return this.prisma.product.delete({ where: productWhereUniqueInput });
   }
