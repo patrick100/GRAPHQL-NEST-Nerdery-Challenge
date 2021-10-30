@@ -18,7 +18,7 @@ export class OrdersController {
     @Request() req,
     @Param('orderId') orderId: string,
   ): Promise<OrderWithDetailDto> {
-    return this.orderService.orderDetail(req.user.uuid, orderId);
+    return this.orderService.orderDetail(orderId);
   }
 
   @UseGuards(JwtAuthGuard, ManagerGuard)
