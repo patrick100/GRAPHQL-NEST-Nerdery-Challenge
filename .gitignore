@@ -40,3 +40,6 @@ lerna-debug.log*
 
 # Prisma
 prisma/migrations
+
+# testing
+__snapshots__/

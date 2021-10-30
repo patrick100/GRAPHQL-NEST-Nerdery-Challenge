@@ -11,6 +11,10 @@ export class LikesService {
   ) {}
 
   async verifyLike(user: User, product: Product): Promise<LikeProduct> {
+    if (!user) {
+      throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
+    }
+
     if (!product) {
       throw new HttpException('Product Not Found', HttpStatus.NOT_FOUND);
     }
@@ -22,7 +26,7 @@ export class LikesService {
     return like;
   }
 
-  async giveLikeProduct(userId: string, productId: string) {
+  async giveLikeProduct(userId: string, productId: string): Promise<void> {
     const product = await this.prisma.product.findUnique({
       where: { uuid: productId },
     });
@@ -36,13 +40,14 @@ export class LikesService {
           productId: product.id,
         },
       });
-      await this.incrementLikeCounter(product.id);
+
+      this.incrementLikeCounter(product.id);
     } else {
       throw new HttpException('Like Already Exist', HttpStatus.CONFLICT);
     }
   }
 
-  async removeLikeProduct(userId: string, productId: string) {
+  async removeLikeProduct(userId: string, productId: string): Promise<void> {
     const product = await this.prisma.product.findUnique({
       where: { uuid: productId },
     });
@@ -53,21 +58,22 @@ export class LikesService {
       await this.prisma.likeProduct.delete({
         where: { id: like.id },
       });
-      await this.decrementLikeCounter(product.id);
+
+      this.decrementLikeCounter(product.id);
     } else {
       throw new HttpException('Like Not Found', HttpStatus.NOT_FOUND);
     }
   }
 
   async incrementLikeCounter(productId: number) {
-    await this.prisma.product.update({
+    return this.prisma.product.update({
       where: { id: productId },
       data: { likeCounter: { increment: 1 } },
     });
   }
 
   async decrementLikeCounter(productId: number) {
-    await this.prisma.product.update({
+    return this.prisma.product.update({
       where: { id: productId },
       data: { likeCounter: { decrement: 1 } },
     });

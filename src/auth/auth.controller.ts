@@ -16,8 +16,8 @@ import { UserDto } from '../users/dto/response/user.dto';
 import { plainToClass } from 'class-transformer';
 import { SignInDto } from './dto/request/sign-in.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { PasswordResetDto } from './dto/request/password-reset.dto';
-import { VerifyPasswordResetDto } from './dto/request/verify-password-reset.dto';
+import { SendTokenResetPasswordDto } from './dto/request/send-token-reset-password.dto';
+import { ResetPasswordDto } from './dto/request/reset-password.dto';
 
 @ApiTags('Auth')
 @Controller()
@@ -49,24 +49,20 @@ export class AuthController {
     return await this.authService.verifyEmail(uuid, token);
   }
 
-  @Patch('password-reset')
+  @Patch('reset-password')
   @HttpCode(204)
-  async passwordReset(@Body() data: PasswordResetDto) {
-    return await this.authService.passwordReset(data.email);
+  async sendTokenToResetPassword(@Body() data: SendTokenResetPasswordDto) {
+    return await this.authService.sendTokenToResetPassword(data.email);
   }
 
-  @Patch('password-reset/:uuid/:token')
+  @Patch('reset-password/:uuid/:token')
   @HttpCode(204)
-  async verifyPasswordReset(
+  async ResetPassword(
     @Param('uuid') uuid: string,
     @Param('token') token: string,
-    @Body() data: VerifyPasswordResetDto,
+    @Body() data: ResetPasswordDto,
   ) {
-    return await this.authService.verifyPasswordReset(
-      uuid,
-      token,
-      data.password,
-    );
+    return await this.authService.ResetPassword(uuid, token, data.password);
   }
 
   @UseGuards(JwtAuthGuard)
