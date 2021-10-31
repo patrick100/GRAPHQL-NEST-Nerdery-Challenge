@@ -28,11 +28,6 @@ export class CreateProductDto {
   @IsString()
   readonly category: string;
 
-  // @ApiProperty({ description: 'imgUrl TODO ELIMINAR' })
-  // @IsOptional()
-  // @IsUrl()
-  // readonly imageUrl: string;
-
   @ApiProperty({ description: 'Measurement unit of the product' })
   @IsString()
   readonly measurementUnit: string = 'unit';

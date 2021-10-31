@@ -25,7 +25,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async infoMeUser(@Request() req): Promise<UserDto> {
-    const user = await this.userService.user(req.user.uuid);
+    const user = await this.userService.user({ uuid: req.user.uuid });
 
     return plainToClass(UserDto, user);
   }
@@ -45,7 +45,7 @@ export class UsersController {
     @Body()
     userData: ModifyUserDto,
   ): Promise<UserDto> {
-    const user = this.userService.modifyUser({ id: req.user.uuid }, userData);
+    const user = this.userService.modifyUser({ uuid: req.user.uuid }, userData);
 
     return plainToClass(UserDto, user);
   }
@@ -53,7 +53,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Delete('me')
   async deleteMeUser(@Request() req): Promise<UserDto> {
-    const user = this.userService.deleteUser({ id: req.user.uuid });
+    const user = this.userService.deleteUser({ uuid: req.user.uuid });
 
     return plainToClass(UserDto, user);
   }

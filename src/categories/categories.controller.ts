@@ -62,7 +62,7 @@ export class CategoriesController {
   @UseGuards(JwtAuthGuard, ManagerGuard)
   @HttpCode(204)
   @Delete(':categoryId')
-  async deleteMeUser(
+  async deleteCategory(
     @Param('categoryId') categoryId: string,
   ): Promise<CategoryDto> {
     const category = await this.categoryService.deleteCategory({

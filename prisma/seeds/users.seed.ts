@@ -8,6 +8,7 @@ const users: Prisma.UserCreateInput[] = [
     firstName: 'Patrick',
     lastName: 'Lazo',
     password: '123456',
+    role: 'MANAGER',
   },
   {
     email: 'alexander@ravn.co',
