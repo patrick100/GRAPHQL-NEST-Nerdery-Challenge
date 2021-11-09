@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { GraphQLModule } from '@nestjs/graphql';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -16,6 +17,9 @@ import { PrismaModule } from './prisma/prisma.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+    GraphQLModule.forRoot({
+      autoSchemaFile: 'schema.gql',
     }),
     UsersModule,
     AuthModule,
