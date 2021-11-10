@@ -10,7 +10,7 @@ import { User } from './models/user';
 @Injectable()
 export class UsersService2 {
   private users: User[] = [];
-
+  /* 
   public createUser(createUserData: CreateUserInput): User {
     const user: User = {
       userId: uuidv4(),
@@ -50,5 +50,5 @@ export class UsersService2 {
     this.users.splice(userIndex);
 
     return user;
-  }
+  } */
 }
