@@ -4,6 +4,10 @@ import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 @InputType()
 export class UpdateUserInput {
   @Field()
+  @IsNotEmpty()
+  uuid: string;
+
+  @Field()
   @IsOptional()
   @IsString()
   readonly firstName?: string;

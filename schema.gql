@@ -10,14 +10,18 @@ type User {
 }
 
 type Query {
-  user: User!
+  me: User!
+  user(uuid: String!): User!
 }
 
 type Mutation {
+  updateMe(updateUserData: UpdateUserInput!): User!
   updateUser(updateUserData: UpdateUserInput!): User!
+  deleteUser: User!
 }
 
 input UpdateUserInput {
+  uuid: String!
   firstName: String!
   lastName: String
 }

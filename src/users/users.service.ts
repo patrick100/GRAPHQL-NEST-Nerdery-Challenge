@@ -56,6 +56,7 @@ export class UsersService {
       throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
     }
 
+    await this.prisma.token.deleteMany({ where: { userUuid: user.uuid } });
     return this.prisma.user.delete({ where: userWhereUniqueInput });
   }
 }
