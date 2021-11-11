@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Prisma, User } from '.prisma/client';
 import { PrismaService } from 'prisma/prisma.service';
 import { UserDto } from './dto/response/user.dto';
+import { ModifyUserDto } from './dto/request/modify-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -27,7 +28,7 @@ export class UsersService {
 
   async modifyUser(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
-    data: Prisma.UserUpdateInput,
+    data: ModifyUserDto,
   ): Promise<User> {
     // user exists?
     const user = await this.prisma.user.findUnique({
@@ -55,6 +56,7 @@ export class UsersService {
       throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
     }
 
+    await this.prisma.token.deleteMany({ where: { userUuid: user.uuid } });
     return this.prisma.user.delete({ where: userWhereUniqueInput });
   }
 }
