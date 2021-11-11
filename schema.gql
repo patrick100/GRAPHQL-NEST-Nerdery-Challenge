@@ -17,7 +17,7 @@ type Query {
 type Mutation {
   updateMe(updateUserData: UpdateUserInput!): User!
   updateUser(updateUserData: UpdateUserInput!): User!
-  deleteUser: User!
+  deleteMe: User!
 }
 
 input UpdateUserInput {

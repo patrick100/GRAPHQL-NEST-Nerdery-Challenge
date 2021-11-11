@@ -47,7 +47,7 @@ export class UsersResolver {
 
   @Mutation(() => User)
   @UseGuards(GqlAuthGuard)
-  deleteUser(@CurrentUser() user: TokenPayload): Promise<User> {
+  deleteMe(@CurrentUser() user: TokenPayload): Promise<User> {
     return this.usersService.deleteUser({ uuid: user.uuid });
   }
 }
