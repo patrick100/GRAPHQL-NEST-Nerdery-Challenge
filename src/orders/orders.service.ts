@@ -133,4 +133,35 @@ export class OrdersService {
 
     return newOrder;
   }
+
+  /* Orders */
+
+  async order(
+    orderWhereUniqueInput: Prisma.OrderWhereUniqueInput,
+  ): Promise<Order | null> {
+    const order = await this.prisma.order.findUnique({
+      where: orderWhereUniqueInput,
+    });
+    if (!order) {
+      throw new HttpException('Order Not Found', HttpStatus.NOT_FOUND);
+    }
+    return order;
+  }
+
+  async ordersOfUser(
+    userId: Prisma.OrderWhereUniqueInput,
+  ): Promise<OrderDto[]> {
+    const user = await this.user.user({ uuid: userId.uuid });
+    if (!user) {
+      throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
+    }
+
+    const orders = await this.prisma.order.findMany({
+      where: {
+        userId: user.id,
+      },
+    });
+
+    return orders;
+  }
 }

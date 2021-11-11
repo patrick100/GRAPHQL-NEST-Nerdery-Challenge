@@ -50,4 +50,15 @@ export class CartsResolver {
   async cartToOrders(@Args('cartUuid') cartUuid: string): Promise<OrderDto> {
     return this.cartService.cartToOrders(cartUuid);
   }
+
+  /* Orders */
+  @Query(() => Order, { name: 'orderOfMe', nullable: true })
+  async order(@Args('orderId') uuid: string): Promise<OrderDto> {
+    return this.cartService.order({ uuid: uuid });
+  }
+
+  @Query(() => [Order], { name: 'ordersOfUser', nullable: true })
+  async ordersOfUser(@Args('userId') uuid: string): Promise<OrderDto[]> {
+    return this.cartService.ordersOfUser({ uuid: uuid });
+  }
 }
