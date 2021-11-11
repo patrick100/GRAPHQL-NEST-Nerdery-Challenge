@@ -9,16 +9,16 @@ import {
 } from '@nestjs/graphql';
 import { DetailsOrderService } from 'src/details-order/details-order.service';
 import { Detail } from 'src/details-order/models/detail.model';
-import { OrderDto } from 'src/OLD/dto/response/order.dto';
 import { UsersService } from 'src/users/users.service';
-import { CartsService } from './carts.service';
+import { OrdersService } from './orders.service';
 import { ProductToCartInput } from './dto/input/product-to-cart.input';
+import { OrderDto } from './dto/response/order.dto';
 import { Order } from './models/order.model';
 
 @Resolver(() => Order)
 export class CartsResolver {
   constructor(
-    private cartService: CartsService,
+    private cartService: OrdersService,
     private userService: UsersService,
     private detailService: DetailsOrderService,
   ) {}
@@ -44,5 +44,10 @@ export class CartsResolver {
     @Args('productData') productData: ProductToCartInput,
   ): Promise<OrderDetail> {
     return this.cartService.addProductToCart(cartUuid, productData);
+  }
+
+  @Mutation(() => Order, { name: 'cartToOrders', nullable: true })
+  async cartToOrders(@Args('cartUuid') cartUuid: string): Promise<OrderDto> {
+    return this.cartService.cartToOrders(cartUuid);
   }
 }

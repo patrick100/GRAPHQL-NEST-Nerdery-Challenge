@@ -2,12 +2,12 @@ import { Order, OrderDetail, Prisma } from '.prisma/client';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { PrismaService } from 'prisma/prisma.service';
-import { OrderDto } from 'src/OLD/dto/response/order.dto';
 import { UsersService } from 'src/users/users.service';
 import { ProductToCartDto } from './dto/request/product-to-cart.dto';
+import { OrderDto } from './dto/response/order.dto';
 
 @Injectable()
-export class CartsService {
+export class OrdersService {
   constructor(private prisma: PrismaService, private user: UsersService) {}
 
   async getOrderId(
@@ -106,5 +106,31 @@ export class CartsService {
     return this.prisma.orderDetail.create({
       data: data,
     });
+  }
+
+  async cartToOrders(cartId: string): Promise<OrderDto> {
+    const cartExists = await this.prisma.order.findUnique({
+      where: {
+        uuid: cartId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!cartExists) {
+      throw new HttpException('Cart Not Found', HttpStatus.NOT_FOUND);
+    }
+
+    const newOrder = await this.prisma.order.update({
+      where: {
+        uuid: cartId,
+      },
+      data: {
+        status: 'ORDERED',
+      },
+    });
+
+    return newOrder;
   }
 }

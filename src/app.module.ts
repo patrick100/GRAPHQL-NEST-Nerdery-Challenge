@@ -9,7 +9,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { ProductsModule } from './products/products.module';
 import { LikesModule } from './likes/likes.module';
 import { FilesModule } from './files/files.module';
-import { CartsModule } from './orders/carts.module';
+import { OrdersModule } from './orders/orders.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { DetailsOrderModule } from './details-order/details-order.module';
 
@@ -27,7 +27,7 @@ import { DetailsOrderModule } from './details-order/details-order.module';
     ProductsModule,
     LikesModule,
     FilesModule,
-    CartsModule,
+    OrdersModule,
     PrismaModule,
     DetailsOrderModule,
   ],

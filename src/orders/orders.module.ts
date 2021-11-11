@@ -5,8 +5,8 @@ import { PaginationService } from 'src/common/services/pagination.service';
 import { DetailsOrderService } from 'src/details-order/details-order.service';
 import { ProductsService } from 'src/products/products.service';
 import { UsersService } from 'src/users/users.service';
-import { CartsResolver } from './carts.resolver';
-import { CartsService } from './carts.service';
+import { CartsResolver } from './orders.resolver';
+import { OrdersService } from './orders.service';
 
 @Module({
   providers: [
@@ -14,10 +14,11 @@ import { CartsService } from './carts.service';
     PrismaService,
     UsersService,
     DetailsOrderService,
-    CartsService,
+    OrdersService,
     ProductsService,
     PaginationService,
     CategoriesService,
+    OrdersService,
   ],
 })
-export class CartsModule {}
+export class OrdersModule {}

@@ -1,13 +1,13 @@
 import { OrderDetail, Prisma } from '.prisma/client';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
-import { CartsService } from 'src/orders/carts.service';
+import { OrdersService } from 'src/orders/orders.service';
 
 @Injectable()
 export class DetailsOrderService {
   constructor(
     private prisma: PrismaService,
-    private orderService: CartsService,
+    private orderService: OrdersService,
   ) {}
 
   async details(
