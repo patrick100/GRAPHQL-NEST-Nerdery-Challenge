@@ -18,9 +18,6 @@ export class ProductDto {
   readonly categoryId: number;
 
   @Expose()
-  readonly imageUrl: string;
-
-  @Expose()
   readonly measurementUnit: string;
 
   @Expose()
