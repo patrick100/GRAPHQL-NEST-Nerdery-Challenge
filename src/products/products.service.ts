@@ -101,7 +101,7 @@ export class ProductsService {
 
   async createProduct(productData: CreateProductDto): Promise<Product> {
     const { id } = await this.categoryService.category({
-      uuid: productData.category,
+      uuid: productData.categoryUuid,
     });
 
     const data: Prisma.ProductCreateInput = {
@@ -126,9 +126,9 @@ export class ProductsService {
 
     let category: Category;
 
-    if (productData.category) {
+    if (productData.categoryUuid) {
       category = await this.categoryService.category({
-        uuid: productData.category,
+        uuid: productData.categoryUuid,
       });
       if (!category) {
         throw new HttpException('Category Not Found', HttpStatus.NOT_FOUND);
@@ -136,7 +136,7 @@ export class ProductsService {
     }
 
     let data: Prisma.ProductUpdateInput;
-    if (productData.category) {
+    if (productData.categoryUuid) {
       data = {
         ...productData,
         category: { connect: { id: category.id } },
