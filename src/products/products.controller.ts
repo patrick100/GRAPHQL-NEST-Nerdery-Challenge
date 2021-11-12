@@ -34,14 +34,13 @@ export class ProductsController {
     private readonly fileService: FilesService,
   ) {}
   @Get()
-  async products(
-    @Query() paginationQuery: PaginationQueryDto,
-  ): Promise<QueueCollectionDto> {
-    const products = await this.productService.products(paginationQuery);
+  // async products(
+  //   @Query() paginationQuery: PaginationQueryDto,
+  // ): Promise<QueueCollectionDto> {
+  //   const products = await this.productService.products(paginationQuery);
 
-    return products;
-  }
-
+  //   return products;
+  // }
   @Get(':productId')
   async product(
     @Param('productId') productId: string,

@@ -10,6 +10,7 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { QueueCollectionDto } from 'src/common/dto/queue-collection.dto';
 import { plainToClass } from 'class-transformer';
 import { CategoriesService } from 'src/categories/categories.service';
+import { SearchByCategoryDto } from './dto/request/search-by-category.dto';
 
 @Injectable()
 export class ProductsService {
@@ -19,8 +20,12 @@ export class ProductsService {
     private categoryService: CategoriesService,
   ) {}
 
-  async products(params: PaginationQueryDto): Promise<QueueCollectionDto> {
-    const { page, perPage, category } = params;
+  async products(
+    params: PaginationQueryDto,
+    categoryData: SearchByCategoryDto,
+  ): Promise<QueueCollectionDto> {
+    const { category } = categoryData;
+    const { page, perPage } = params;
     const { skip, take } = this.pagination.paginatedHelper(params);
 
     let count: number;
