@@ -1,4 +1,7 @@
+import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
+import { ManagerGuard } from 'src/auth/guards/manager.guard';
 import { PaginationQueryInput } from 'src/common/dto/input/pagination-query.input';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryInput } from './dto/input/create-category.input';
@@ -28,6 +31,7 @@ export class CategoriesResolver {
   }
 
   @Mutation(() => Category)
+  @UseGuards(GqlAuthGuard, ManagerGuard)
   async createCategory(
     @Args('createCategoryData') createCategoryData: CreateCategoryInput,
   ): Promise<Category> {
@@ -35,6 +39,7 @@ export class CategoriesResolver {
   }
 
   @Mutation(() => Category)
+  @UseGuards(GqlAuthGuard, ManagerGuard)
   async modifyCategory(
     @Args('uuid') uuid: string,
     @Args('modifyCategoryData') modifyCategoryData: ModifyCategoryInput,
@@ -46,6 +51,7 @@ export class CategoriesResolver {
   }
 
   @Mutation(() => Category)
+  @UseGuards(GqlAuthGuard, ManagerGuard)
   async deleteCategory(@Args('uuid') uuid: string): Promise<Category> {
     return this.categoriesService.deleteCategory({ uuid: uuid });
   }
