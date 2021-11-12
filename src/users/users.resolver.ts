@@ -11,18 +11,18 @@ import { UsersService } from './users.service';
 
 @Resolver(() => User)
 export class UsersResolver {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly userService: UsersService) {}
 
   @Query(() => User, { name: 'me', nullable: false })
   @UseGuards(GqlAuthGuard)
   me(@CurrentUser() user: TokenPayload): Promise<User> {
-    return this.usersService.findOne(user.uuid);
+    return this.userService.findOne(user.uuid);
   }
 
   @Query(() => User, { name: 'user', nullable: false })
   @UseGuards(GqlAuthGuard, ManagerGuard)
   getUser(@Args() getUserArgs: GetUserArgs): Promise<User> {
-    return this.usersService.findOne(getUserArgs.uuid);
+    return this.userService.findOne(getUserArgs.uuid);
   }
 
   @Mutation(() => User)
@@ -31,7 +31,7 @@ export class UsersResolver {
     @CurrentUser() user: TokenPayload,
     @Args('updateUserData') updateUserData: UpdateUserInput,
   ): Promise<User> {
-    return this.usersService.modifyUser({ uuid: user.uuid }, updateUserData);
+    return this.userService.modifyUser({ uuid: user.uuid }, updateUserData);
   }
 
   @Mutation(() => User)
@@ -39,7 +39,7 @@ export class UsersResolver {
   updateUser(
     @Args('updateUserData') updateUserData: UpdateUserInput,
   ): Promise<User> {
-    return this.usersService.modifyUser(
+    return this.userService.modifyUser(
       { uuid: updateUserData.uuid },
       updateUserData,
     );
@@ -48,6 +48,6 @@ export class UsersResolver {
   @Mutation(() => User)
   @UseGuards(GqlAuthGuard)
   deleteMe(@CurrentUser() user: TokenPayload): Promise<User> {
-    return this.usersService.deleteUser({ uuid: user.uuid });
+    return this.userService.deleteUser({ uuid: user.uuid });
   }
 }
