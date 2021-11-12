@@ -43,3 +43,6 @@ prisma/migrations
 
 # testing
 __snapshots__/
+
+# graphql
+schema.gql
