@@ -57,7 +57,7 @@ export class AuthController {
 
   @Patch('reset-password/:uuid/:token')
   @HttpCode(204)
-  async ResetPassword(
+  async resetPassword(
     @Param('uuid') uuid: string,
     @Param('token') token: string,
     @Body() data: ResetPasswordDto,
