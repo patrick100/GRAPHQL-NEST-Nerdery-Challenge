@@ -25,14 +25,14 @@ import { CategoryDto } from './dto/response/category.dto';
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoryService: CategoriesService) {}
-  @Get()
-  async categories(
-    @Query() paginationQuery: PaginationQueryDto,
-  ): Promise<QueueCollectionDto> {
-    const categories = await this.categoryService.categories(paginationQuery);
+  // @Get()
+  // async categories(
+  //   @Query() paginationQuery: PaginationQueryDto,
+  // ): Promise<QueueCollectionDto> {
+  //   const categories = await this.categoryService.categories(paginationQuery);
 
-    return categories;
-  }
+  //   return categories;
+  // }
 
   @UseGuards(JwtAuthGuard, ManagerGuard)
   @HttpCode(201)

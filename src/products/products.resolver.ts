@@ -1,3 +1,4 @@
+import { UseGuards } from '@nestjs/common';
 import {
   Args,
   Mutation,
@@ -6,11 +7,20 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
+import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
+import { ManagerGuard } from 'src/auth/guards/manager.guard';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { CategoriesService } from 'src/categories/categories.service';
 import { CategoryDto } from 'src/categories/dto/response/category.dto';
+import { PaginationQueryInput } from 'src/common/dto/input/pagination-query.input';
+import { FilesService } from 'src/files/files.service';
+import { FileImage } from 'src/files/models/file-image';
+import TokenPayload from 'src/interfaces/token-payload.interface';
 import { CreateProductInput } from './dto/input/create-product.input';
 import { ModifyProductInput } from './dto/input/modify-product.input';
+import { SearchByCategoryDto } from './dto/request/search-by-category.dto';
 import { ProductDto } from './dto/response/product.dto';
+import { CollectionProductModel } from './models/collection-product.model';
 import { Product } from './models/product.model';
 import { ProductsService } from './products.service';
 
@@ -19,7 +29,26 @@ export class ProductsResolver {
   constructor(
     private productService: ProductsService,
     private categoryService: CategoriesService,
+    private fileService: FilesService,
   ) {}
+
+  @Query(() => CollectionProductModel, { name: 'products', nullable: true })
+  async products(
+    @Args('paginationQuery') paginationQuery: PaginationQueryInput,
+    @Args('searchByCategory', { nullable: true })
+    searchByCategory: SearchByCategoryDto,
+  ): Promise<CollectionProductModel> {
+    const products = await this.productService.products(
+      paginationQuery,
+      searchByCategory,
+    );
+    const pageInfo = await this.productService.productsPageInfo(
+      paginationQuery,
+      searchByCategory,
+    );
+
+    return { products, pageInfo };
+  }
 
   @Query(() => Product, { name: 'product', nullable: true })
   async product(@Args('uuid') uuid: string): Promise<ProductDto> {
@@ -32,6 +61,7 @@ export class ProductsResolver {
   }
 
   @Mutation(() => Product)
+  @UseGuards(GqlAuthGuard, ManagerGuard)
   async createProduct(
     @Args('createProductData') createProductData: CreateProductInput,
   ): Promise<CategoryDto> {
@@ -39,6 +69,7 @@ export class ProductsResolver {
   }
 
   @Mutation(() => Product)
+  @UseGuards(GqlAuthGuard, ManagerGuard)
   async modifyProduct(
     @Args('uuid') uuid: string,
     @Args('modifyProductData') modifyProductData: ModifyProductInput,
@@ -47,17 +78,34 @@ export class ProductsResolver {
   }
 
   @Mutation(() => Product)
+  @UseGuards(GqlAuthGuard, ManagerGuard)
   async enableProduct(@Args('uuid') uuid: string): Promise<CategoryDto> {
     return this.productService.enableProduct({ uuid: uuid });
   }
 
   @Mutation(() => Product)
+  @UseGuards(GqlAuthGuard, ManagerGuard)
   async disableProduct(@Args('uuid') uuid: string): Promise<CategoryDto> {
     return this.productService.disableProduct({ uuid: uuid });
   }
 
   @Mutation(() => Product)
+  @UseGuards(GqlAuthGuard, ManagerGuard)
   async deleteProduct(@Args('uuid') uuid: string): Promise<CategoryDto> {
     return this.productService.deleteProduct({ uuid: uuid });
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => FileImage)
+  async uploadImgProduct(
+    @CurrentUser() user: TokenPayload,
+    @Args('uuid') uuid: string,
+  ): Promise<FileImage> {
+    return this.fileService.generatePresignedUrl(uuid, user.uuid);
+  }
+
+  @Query(() => [FileImage])
+  async getImagesProduct(@Args('uuid') uuid: string): Promise<FileImage[]> {
+    return this.fileService.getImagesbyProductId(uuid);
   }
 }

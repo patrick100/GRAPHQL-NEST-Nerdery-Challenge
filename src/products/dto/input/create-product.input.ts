@@ -25,7 +25,7 @@ export class CreateProductInput {
 
   @Field()
   @IsString()
-  category: string;
+  categoryUuid: string;
 
   /* eslint-disable*/
   @Field({ nullable: true })

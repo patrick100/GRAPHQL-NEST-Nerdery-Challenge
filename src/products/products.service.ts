@@ -7,9 +7,10 @@ import { ModifyProductDto } from './dto/request/modify-product.dto';
 import { _ } from 'lodash';
 import { PaginationService } from '../common/services/pagination.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { QueueCollectionDto } from 'src/common/dto/queue-collection.dto';
 import { plainToClass } from 'class-transformer';
 import { CategoriesService } from 'src/categories/categories.service';
+import { SearchByCategoryDto } from './dto/request/search-by-category.dto';
+import { ProductDto } from './dto/response/product.dto';
 
 @Injectable()
 export class ProductsService {
@@ -19,42 +20,58 @@ export class ProductsService {
     private categoryService: CategoriesService,
   ) {}
 
-  async products(params: PaginationQueryDto): Promise<QueueCollectionDto> {
-    const { page, perPage, category } = params;
+  async products(
+    params: PaginationQueryDto,
+    categoryData: SearchByCategoryDto,
+  ): Promise<ProductDto[]> {
+    const { category } = categoryData;
+    // const { page, perPage } = params;
     const { skip, take } = this.pagination.paginatedHelper(params);
 
-    let count: number;
-    let data: Product[];
+    let products: Product[];
 
     // find categoryId
     if (category) {
       const categoryRetrieve = await this.categoryService.category({
         uuid: category,
       });
-      [count, data] = await Promise.all([
-        this.prisma.product.count({
-          where: {
-            categoryId: categoryRetrieve.id,
-          },
-        }),
-
-        this.prisma.product.findMany({
-          skip: skip,
-          take: take,
-          where: {
-            categoryId: categoryRetrieve.id,
-          },
-        }),
-      ]);
+      products = await this.prisma.product.findMany({
+        skip: skip,
+        take: take,
+        where: {
+          categoryId: categoryRetrieve.id,
+        },
+      });
     } else {
-      [count, data] = await Promise.all([
-        this.prisma.product.count({}),
+      products = await this.prisma.product.findMany({
+        skip: skip,
+        take: take,
+      });
+    }
 
-        this.prisma.product.findMany({
-          skip: skip,
-          take: take,
-        }),
-      ]);
+    return plainToClass(ProductDto, products);
+  }
+
+  async productsPageInfo(
+    params: PaginationQueryDto,
+    categoryData: SearchByCategoryDto,
+  ): Promise<PaginationDto> {
+    const { category } = categoryData;
+    const { page, perPage } = params;
+    let count: number;
+
+    if (category) {
+      const categoryRetrieve = await this.categoryService.category({
+        uuid: category,
+      });
+
+      count = await this.prisma.product.count({
+        where: {
+          categoryId: categoryRetrieve.id,
+        },
+      });
+    } else {
+      count = await this.prisma.product.count({});
     }
 
     const pageInfo: PaginationDto = this.pagination.paginationSerializer(
@@ -65,7 +82,7 @@ export class ProductsService {
       },
     );
 
-    return plainToClass(QueueCollectionDto, { pageInfo, data });
+    return plainToClass(PaginationDto, pageInfo);
   }
 
   async product(
@@ -83,13 +100,16 @@ export class ProductsService {
 
   async createProduct(productData: CreateProductDto): Promise<Product> {
     const { id } = await this.categoryService.category({
-      uuid: productData.category,
+      uuid: productData.categoryUuid,
     });
 
+    const newProductData = _.omit(productData, ['categoryUuid']);
+
     const data: Prisma.ProductCreateInput = {
-      ...productData,
+      ...newProductData,
       category: { connect: { id: id } },
     };
+
     return this.prisma.product.create({
       data,
     });
@@ -108,9 +128,9 @@ export class ProductsService {
 
     let category: Category;
 
-    if (productData.category) {
+    if (productData.categoryUuid) {
       category = await this.categoryService.category({
-        uuid: productData.category,
+        uuid: productData.categoryUuid,
       });
       if (!category) {
         throw new HttpException('Category Not Found', HttpStatus.NOT_FOUND);
@@ -118,7 +138,7 @@ export class ProductsService {
     }
 
     let data: Prisma.ProductUpdateInput;
-    if (productData.category) {
+    if (productData.categoryUuid) {
       data = {
         ...productData,
         category: { connect: { id: category.id } },

@@ -6,6 +6,7 @@ import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { QueueCollectionDto } from 'src/common/dto/queue-collection.dto';
 import { PaginationService } from 'src/common/services/pagination.service';
+import { CategoryDto } from './dto/response/category.dto';
 
 @Injectable()
 export class CategoriesService {
@@ -14,19 +15,20 @@ export class CategoriesService {
     private pagination: PaginationService,
   ) {}
 
-  async categories(params: PaginationQueryDto): Promise<QueueCollectionDto> {
-    const { page, perPage } = params;
+  async categories(params: PaginationQueryDto): Promise<CategoryDto[]> {
     const { skip, take } = this.pagination.paginatedHelper(params);
 
-    const [count, data] = await Promise.all([
-      this.prisma.category.count(),
+    const categories = await this.prisma.category.findMany({
+      skip: skip,
+      take: take,
+    });
 
-      this.prisma.category.findMany({
-        skip: skip,
-        take: take,
-      }),
-    ]);
+    return plainToClass(CategoryDto, categories);
+  }
 
+  async categoriesPageInfo(params: PaginationQueryDto): Promise<PaginationDto> {
+    const { page, perPage } = params;
+    const count = await this.prisma.category.count();
     const pageInfo: PaginationDto = this.pagination.paginationSerializer(
       count,
       {
@@ -35,7 +37,7 @@ export class CategoriesService {
       },
     );
 
-    return plainToClass(QueueCollectionDto, { pageInfo, data });
+    return plainToClass(PaginationDto, pageInfo);
   }
 
   async category(

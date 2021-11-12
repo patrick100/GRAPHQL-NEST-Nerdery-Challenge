@@ -9,8 +9,4 @@ export class PaginationQueryDto {
   @IsOptional()
   @IsPositive()
   perPage?: number = 2;
-
-  @IsOptional()
-  @IsUUID()
-  category?: string;
 }
