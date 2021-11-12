@@ -1,0 +1,27 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  uuid: String
+  firstName: String
+  lastName: String
+  email: String
+}
+
+type Query {
+  me: User!
+  user(uuid: String!): User!
+}
+
+type Mutation {
+  updateMe(updateUserData: UpdateUserInput!): User!
+  updateUser(updateUserData: UpdateUserInput!): User!
+  deleteMe: User!
+}
+
+input UpdateUserInput {
+  uuid: String!
+  firstName: String!
+  lastName: String
+}

@@ -1,73 +1,54 @@
 import { Order, OrderDetail, Prisma } from '.prisma/client';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
-import e from 'express';
 import { PrismaService } from 'prisma/prisma.service';
-import { CartDto } from 'src/carts/dto/request/cart.dto';
-import { ProductToCartDto } from 'src/carts/dto/request/product-to-cart.dto';
 import { UsersService } from 'src/users/users.service';
-import { OrdersDto } from './dto/request/orders.dto';
-import { OrderWithDetailDto } from './dto/response/order-with-detail.dto';
+import { ProductToCartDto } from './dto/request/product-to-cart.dto';
 import { OrderDto } from './dto/response/order.dto';
 
 @Injectable()
 export class OrdersService {
   constructor(private prisma: PrismaService, private user: UsersService) {}
 
-  async order(
+  async getOrderId(
     orderWhereUniqueInput: Prisma.OrderWhereUniqueInput,
-  ): Promise<Order | null> {
-    const order = await this.prisma.order.findUnique({
+  ): Promise<number | null> {
+    const { id } = await this.prisma.order.findUnique({
       where: orderWhereUniqueInput,
     });
-    if (!order) {
+    if (!id) {
       throw new HttpException('Order Not Found', HttpStatus.NOT_FOUND);
     }
-    return order;
+    return id;
   }
 
-  async cartOfUser(
+  async cart(
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
-  ): Promise<OrderWithDetailDto> {
-    const { id } = await this.user.user(userWhereUniqueInput);
+  ): Promise<OrderDto> {
+    const { id: userId } = await this.user.user(userWhereUniqueInput);
 
     // Exist cart?
-    const cart = await this.prisma.order.findFirst({
+    let cart = await this.prisma.order.findFirst({
       where: {
-        userId: id,
+        userId: userId,
         status: 'ONCART',
       },
     });
-    let detail: OrderDetail;
 
-    if (cart) {
-      // get cart detail
-      const detail = await this.cartDetail({ orderId: cart.id });
-
-      return plainToClass(OrderWithDetailDto, { cart, detail });
-    } else {
-      // create new cart
-      const newCart = await this.createCart({ userId: id });
-
-      return plainToClass(OrderWithDetailDto, { newCart, detail });
+    if (!cart) {
+      cart = await this.createCart(userId);
     }
+
+    return plainToClass(OrderDto, cart);
   }
 
-  async createCart(cartData: CartDto): Promise<Order> {
+  async createCart(UserId: number): Promise<Order> {
     const data: Prisma.OrderCreateInput = {
-      clientId: { connect: { id: cartData.userId } },
+      clientId: { connect: { id: UserId } },
       status: 'ONCART',
     };
     return this.prisma.order.create({
       data,
-    });
-  }
-
-  async cartDetail(cartData: OrdersDto): Promise<OrderDetail[]> {
-    return this.prisma.orderDetail.findMany({
-      where: {
-        orderId: cartData.orderId,
-      },
     });
   }
 
@@ -127,7 +108,7 @@ export class OrdersService {
     });
   }
 
-  async cartToOrders(cartId: string): Promise<OrderWithDetailDto> {
+  async cartToOrders(cartId: string): Promise<OrderDto> {
     const cartExists = await this.prisma.order.findUnique({
       where: {
         uuid: cartId,
@@ -150,37 +131,37 @@ export class OrdersService {
       },
     });
 
-    const cartDetail = await this.cartDetail({ orderId: newOrder.id });
-
-    return plainToClass(OrderWithDetailDto, {
-      order: newOrder,
-      detail: cartDetail,
-    });
+    return newOrder;
   }
 
-  async userOrders(userId: string): Promise<OrderDto[]> {
-    const user = await this.user.user({ uuid: userId });
+  /* Orders */
+
+  async order(
+    orderWhereUniqueInput: Prisma.OrderWhereUniqueInput,
+  ): Promise<Order | null> {
+    const order = await this.prisma.order.findUnique({
+      where: orderWhereUniqueInput,
+    });
+    if (!order) {
+      throw new HttpException('Order Not Found', HttpStatus.NOT_FOUND);
+    }
+    return order;
+  }
+
+  async ordersOfUser(
+    userId: Prisma.OrderWhereUniqueInput,
+  ): Promise<OrderDto[]> {
+    const user = await this.user.user({ uuid: userId.uuid });
     if (!user) {
       throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
     }
 
-    const cart = await this.prisma.order.findMany({
+    const orders = await this.prisma.order.findMany({
       where: {
         userId: user.id,
       },
     });
 
-    return plainToClass(OrderDto, cart);
-  }
-
-  async orderDetail(orderId: string): Promise<OrderWithDetailDto> {
-    const order = await this.order({ uuid: orderId });
-    if (!order) {
-      throw new HttpException('Order Not Found', HttpStatus.NOT_FOUND);
-    }
-
-    const detail = await this.cartDetail({ orderId: order.id });
-
-    return plainToClass(OrderWithDetailDto, { order, detail });
+    return orders;
   }
 }

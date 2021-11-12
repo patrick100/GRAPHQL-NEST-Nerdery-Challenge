@@ -8,6 +8,7 @@ import {
   IsPositive,
   IsBoolean,
   IsInt,
+  IsUUID,
 } from 'class-validator';
 
 export class CreateProductDto {
@@ -26,7 +27,8 @@ export class CreateProductDto {
 
   @ApiProperty({ description: 'uuid of the category of the product' })
   @IsString()
-  readonly category: string;
+  @IsUUID()
+  readonly categoryUuid: string;
 
   @ApiProperty({ description: 'Measurement unit of the product' })
   @IsString()
