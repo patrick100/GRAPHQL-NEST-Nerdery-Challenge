@@ -67,7 +67,6 @@ export class AuthResolver {
   @UseGuards(GqlAuthGuard)
   @Mutation(() => Boolean, { nullable: true })
   signOut(@CurrentHeader() header: string): Promise<void> {
-    console.log(header);
     return this.authService.signOut(header);
   }
 }
