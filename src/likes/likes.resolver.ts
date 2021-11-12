@@ -13,17 +13,17 @@ export class LikesResolver {
   @UseGuards(GqlAuthGuard)
   giveLikeProduct(
     @CurrentUser() user: TokenPayload,
-    @Args('productUuid') productUuid: string,
+    @Args('uuid') uuid: string,
   ): Promise<void> {
-    return this.likeService.giveLikeProduct(user.uuid, productUuid);
+    return this.likeService.giveLikeProduct(user.uuid, uuid);
   }
 
   @Mutation(() => Boolean, { nullable: true })
   @UseGuards(GqlAuthGuard)
   removeLikeProduct(
     @CurrentUser() user: TokenPayload,
-    @Args('productUuid') productUuid: string,
+    @Args('uuid') uuid: string,
   ): Promise<void> {
-    return this.likeService.removeLikeProduct(user.uuid, productUuid);
+    return this.likeService.removeLikeProduct(user.uuid, uuid);
   }
 }
