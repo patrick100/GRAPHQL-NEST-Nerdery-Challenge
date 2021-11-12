@@ -8,9 +8,12 @@ import {
 } from '@nestjs/graphql';
 import { CategoriesService } from 'src/categories/categories.service';
 import { CategoryDto } from 'src/categories/dto/response/category.dto';
+import { PaginationQueryInput } from 'src/common/dto/input/pagination-query.input';
 import { CreateProductInput } from './dto/input/create-product.input';
 import { ModifyProductInput } from './dto/input/modify-product.input';
+import { SearchByCategoryDto } from './dto/request/search-by-category.dto';
 import { ProductDto } from './dto/response/product.dto';
+import { CollectionProductModel } from './models/collection-product.model';
 import { Product } from './models/product.model';
 import { ProductsService } from './products.service';
 
@@ -20,6 +23,24 @@ export class ProductsResolver {
     private productService: ProductsService,
     private categoryService: CategoriesService,
   ) {}
+
+  @Query(() => CollectionProductModel, { name: 'products', nullable: true })
+  async products(
+    @Args('paginationQuery') paginationQuery: PaginationQueryInput,
+    @Args('searchByCategory', { nullable: true })
+    searchByCategory: SearchByCategoryDto,
+  ): Promise<CollectionProductModel> {
+    const products = await this.productService.products(
+      paginationQuery,
+      searchByCategory,
+    );
+    const pageInfo = await this.productService.productsPageInfo(
+      paginationQuery,
+      searchByCategory,
+    );
+
+    return { products, pageInfo };
+  }
 
   @Query(() => Product, { name: 'product', nullable: true })
   async product(@Args('uuid') uuid: string): Promise<ProductDto> {

@@ -23,7 +23,7 @@ export class CategoriesService {
       take: take,
     });
 
-    return categories;
+    return plainToClass(CategoryDto, categories);
   }
 
   async categoriesPageInfo(params: PaginationQueryDto): Promise<PaginationDto> {
@@ -37,7 +37,7 @@ export class CategoriesService {
       },
     );
 
-    return pageInfo;
+    return plainToClass(PaginationDto, pageInfo);
   }
 
   async category(
