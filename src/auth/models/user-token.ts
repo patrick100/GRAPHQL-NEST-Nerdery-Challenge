@@ -6,6 +6,6 @@ export class UserToken {
   @Field()
   token: string;
 
-  @Field()
+  @Field((type) => User, { nullable: true })
   user: User;
 }
