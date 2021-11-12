@@ -7,7 +7,6 @@ import { ModifyProductDto } from './dto/request/modify-product.dto';
 import { _ } from 'lodash';
 import { PaginationService } from '../common/services/pagination.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { QueueCollectionDto } from 'src/common/dto/queue-collection.dto';
 import { plainToClass } from 'class-transformer';
 import { CategoriesService } from 'src/categories/categories.service';
 import { SearchByCategoryDto } from './dto/request/search-by-category.dto';
@@ -104,10 +103,13 @@ export class ProductsService {
       uuid: productData.categoryUuid,
     });
 
+    const newProductData = _.omit(productData, ['categoryUuid']);
+
     const data: Prisma.ProductCreateInput = {
-      ...productData,
+      ...newProductData,
       category: { connect: { id: id } },
     };
+
     return this.prisma.product.create({
       data,
     });
