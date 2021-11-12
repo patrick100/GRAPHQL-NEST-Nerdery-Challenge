@@ -13,6 +13,7 @@ export class CreateUserInput {
 
   @Field()
   @IsString()
+  @Length(6, 20)
   password: string;
 
   @Field()
