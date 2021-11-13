@@ -3,8 +3,8 @@ import { IsOptional, IsUUID } from 'class-validator';
 
 @InputType()
 export class SearchByCategoryDto {
-  @Field({ nullable: true })
+  @Field()
   @IsOptional()
   @IsUUID()
-  category?: string;
+  categoryUuid?: string;
 }

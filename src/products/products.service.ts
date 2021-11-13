@@ -11,6 +11,7 @@ import { plainToClass } from 'class-transformer';
 import { CategoriesService } from 'src/categories/categories.service';
 import { SearchByCategoryDto } from './dto/request/search-by-category.dto';
 import { ProductDto } from './dto/response/product.dto';
+import { CollectionProductModel } from './models/collection-product.model';
 
 @Injectable()
 export class ProductsService {
@@ -20,20 +21,30 @@ export class ProductsService {
     private categoryService: CategoriesService,
   ) {}
 
+  async collectionProducts(
+    params: PaginationQueryDto,
+    categoryData: SearchByCategoryDto,
+  ): Promise<CollectionProductModel> {
+    const edges = await this.products(params, categoryData);
+    const pageInfo = await this.productsPageInfo(params, categoryData);
+
+    return { edges, pageInfo };
+  }
+
   async products(
     params: PaginationQueryDto,
     categoryData: SearchByCategoryDto,
   ): Promise<ProductDto[]> {
-    const { category } = categoryData;
+    const { categoryUuid } = categoryData;
     // const { page, perPage } = params;
     const { skip, take } = this.pagination.paginatedHelper(params);
 
     let products: Product[];
 
     // find categoryId
-    if (category) {
+    if (categoryUuid) {
       const categoryRetrieve = await this.categoryService.category({
-        uuid: category,
+        uuid: categoryUuid,
       });
       products = await this.prisma.product.findMany({
         skip: skip,
@@ -56,13 +67,13 @@ export class ProductsService {
     params: PaginationQueryDto,
     categoryData: SearchByCategoryDto,
   ): Promise<PaginationDto> {
-    const { category } = categoryData;
+    const { categoryUuid } = categoryData;
     const { page, perPage } = params;
     let count: number;
 
-    if (category) {
+    if (categoryUuid) {
       const categoryRetrieve = await this.categoryService.category({
-        uuid: category,
+        uuid: categoryUuid,
       });
 
       count = await this.prisma.product.count({

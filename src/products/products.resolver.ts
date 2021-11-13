@@ -12,7 +12,6 @@ import { ManagerGuard } from 'src/auth/guards/manager.guard';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { CategoriesService } from 'src/categories/categories.service';
 import { CategoryDto } from 'src/categories/dto/response/category.dto';
-import { PaginationQueryInput } from 'src/common/dto/input/pagination-query.input';
 import { FilesService } from 'src/files/files.service';
 import { FileImage } from 'src/files/models/file-image';
 import TokenPayload from 'src/interfaces/token-payload.interface';
@@ -23,6 +22,7 @@ import { ProductDto } from './dto/response/product.dto';
 import { CollectionProductModel } from './models/collection-product.model';
 import { Product } from './models/product.model';
 import { ProductsService } from './products.service';
+import { PaginationQueryInput } from 'src/common/dto/input/pagination-query.input';
 
 @Resolver(() => Product)
 export class ProductsResolver {
@@ -34,20 +34,14 @@ export class ProductsResolver {
 
   @Query(() => CollectionProductModel, { name: 'products', nullable: true })
   async products(
-    @Args('paginationQuery') paginationQuery: PaginationQueryInput,
-    @Args('searchByCategory', { nullable: true })
+    @Args('pagination') paginationQuery: PaginationQueryInput,
+    @Args('category', { nullable: true })
     searchByCategory: SearchByCategoryDto,
   ): Promise<CollectionProductModel> {
-    const products = await this.productService.products(
+    return this.productService.collectionProducts(
       paginationQuery,
       searchByCategory,
     );
-    const pageInfo = await this.productService.productsPageInfo(
-      paginationQuery,
-      searchByCategory,
-    );
-
-    return { products, pageInfo };
   }
 
   @Query(() => Product, { name: 'product', nullable: true })

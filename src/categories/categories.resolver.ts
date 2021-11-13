@@ -6,7 +6,6 @@ import { PaginationQueryInput } from 'src/common/dto/input/pagination-query.inpu
 import { CategoriesService } from './categories.service';
 import { CreateCategoryInput } from './dto/input/create-category.input';
 import { ModifyCategoryInput } from './dto/input/modify-category.input';
-import { CategoryDto } from './dto/response/category.dto';
 import { Category } from './models/category.model';
 import { CollectionCategoryModel } from './models/collection-category.model';
 
@@ -16,13 +15,9 @@ export class CategoriesResolver {
 
   @Query(() => CollectionCategoryModel, { name: 'categories', nullable: true })
   async categories(
-    @Args('paginationQuery') paginationQuery: PaginationQueryInput,
+    @Args('pagination') paginationQuery: PaginationQueryInput,
   ): Promise<CollectionCategoryModel> {
-    const categories = await this.categoriesService.categories(paginationQuery);
-    const pageInfo = await this.categoriesService.categoriesPageInfo(
-      paginationQuery,
-    );
-    return { categories, pageInfo };
+    return this.categoriesService.collectionCategories(paginationQuery);
   }
 
   @Query(() => Category, { name: 'category', nullable: true })
