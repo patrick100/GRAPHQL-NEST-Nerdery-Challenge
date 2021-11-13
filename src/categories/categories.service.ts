@@ -2,11 +2,12 @@ import { Category, Prisma } from '.prisma/client';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { PrismaService } from 'prisma/prisma.service';
+import { PaginationQueryInput } from 'src/common/dto/input/pagination-query.input';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { QueueCollectionDto } from 'src/common/dto/queue-collection.dto';
 import { PaginationService } from 'src/common/services/pagination.service';
 import { CategoryDto } from './dto/response/category.dto';
+import { CollectionCategoryModel } from './models/collection-category.model';
 
 @Injectable()
 export class CategoriesService {
@@ -14,6 +15,14 @@ export class CategoriesService {
     private prisma: PrismaService,
     private pagination: PaginationService,
   ) {}
+  async collectionCategories(
+    paginationQuery: PaginationQueryInput,
+  ): Promise<CollectionCategoryModel> {
+    const edges = await this.categories(paginationQuery);
+    const pageInfo = await this.categoriesPageInfo(paginationQuery);
+
+    return { edges, pageInfo };
+  }
 
   async categories(params: PaginationQueryDto): Promise<CategoryDto[]> {
     const { skip, take } = this.pagination.paginatedHelper(params);
