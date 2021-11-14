@@ -1,25 +1,22 @@
-import { Order, OrderDetail, Prisma } from '.prisma/client';
-import {
-  forwardRef,
-  HttpException,
-  HttpStatus,
-  Inject,
-  Injectable,
-} from '@nestjs/common';
+import { Order, OrderDetail, Prisma, Product } from '.prisma/client';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { plainToClass } from 'class-transformer';
 import { PrismaService } from 'prisma/prisma.service';
 import { DetailsOrderService } from 'src/details-order/details-order.service';
+import Email from 'src/interfaces/email.interface';
+import { ProductsService } from 'src/products/products.service';
 import { UsersService } from 'src/users/users.service';
+import { sendEmail } from 'src/utils/email';
 import { ProductToCartDto } from './dto/request/product-to-cart.dto';
 import { OrderDto } from './dto/response/order.dto';
 
 @Injectable()
 export class OrdersService {
   constructor(
-    // @Inject(forwardRef(() => DetailsOrderService))
     private prisma: PrismaService,
     private user: UsersService,
+    private productService: ProductsService,
     private moduleRef: ModuleRef,
   ) {}
 
@@ -135,7 +132,7 @@ export class OrdersService {
       throw new HttpException('Cart Not Found', HttpStatus.NOT_FOUND);
     }
 
-    if (!this.updateStock) {
+    if (!this.updateStock(cartId)) {
       throw new HttpException(
         'Error processing your cart products',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -158,13 +155,13 @@ export class OrdersService {
     const detailService = this.moduleRef.get(DetailsOrderService, {
       strict: false,
     });
-    const cartDetails = await detailService.details({
+    const cartDetails: OrderDetail[] = await detailService.details({
       uuid: cartUuid,
     });
-
     try {
-      cartDetails.forEach((detail) => {
-        this.prisma.product.update({
+      cartDetails.forEach(async (detail) => {
+        console.log(detail.productId);
+        const query: Product = await this.prisma.product.update({
           where: {
             id: detail.productId,
           },
@@ -174,16 +171,36 @@ export class OrdersService {
             },
           },
         });
+        console.log(query);
+
+        if (query.stock <= 3) {
+          await this.notifyUserLowStock(query);
+        }
       });
     } catch (e) {
-      // throw new HttpException(
-      //   'Error processing your cart products',
-      //   HttpStatus.INTERNAL_SERVER_ERROR,
-      // );
       return false;
     }
 
     return true;
+  }
+
+  async notifyUserLowStock(product: Product): Promise<void> {
+    const usersWhoLikedProduct = await this.productService.usersWhoLikedProduct(
+      product.id,
+    );
+
+    console.log(usersWhoLikedProduct);
+    let emailData: Email;
+
+    await usersWhoLikedProduct.forEach((user) => {
+      emailData = {
+        email: user.user.email,
+        subject: 'Hurry up',
+        body: `Hi ${user.user.firstName}: ${product.name} has low Stock!`,
+      };
+      console.log(emailData);
+      sendEmail(emailData);
+    });
   }
 
   /* Orders */

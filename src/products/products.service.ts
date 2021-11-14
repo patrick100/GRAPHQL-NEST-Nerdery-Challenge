@@ -12,6 +12,7 @@ import { CategoriesService } from 'src/categories/categories.service';
 import { SearchByCategoryDto } from './dto/request/search-by-category.dto';
 import { ProductDto } from './dto/response/product.dto';
 import { CollectionProductModel } from './models/collection-product.model';
+import userInfoEmail from 'src/interfaces/user-emai.interface';
 
 @Injectable()
 export class ProductsService {
@@ -218,5 +219,24 @@ export class ProductsService {
     }
 
     return this.prisma.product.delete({ where: productWhereUniqueInput });
+  }
+
+  async usersWhoLikedProduct(productId: number): Promise<userInfoEmail[]> {
+    const users = await this.prisma.likeProduct.findMany({
+      where: {
+        productId: productId,
+      },
+      select: {
+        user: {
+          select: {
+            email: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    });
+
+    return users;
   }
 }
