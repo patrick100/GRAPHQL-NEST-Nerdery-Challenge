@@ -1,24 +1,21 @@
-import { Module } from '@nestjs/common';
-import { PrismaService } from 'prisma/prisma.service';
-import { CategoriesService } from 'src/categories/categories.service';
+import { forwardRef, Module } from '@nestjs/common';
+import { CategoriesModule } from 'src/categories/categories.module';
 import { PaginationService } from 'src/common/services/pagination.service';
 import { OrdersService } from 'src/orders/orders.service';
-import { ProductsService } from 'src/products/products.service';
-import { UsersService } from 'src/users/users.service';
+import { PrismaModule } from 'src/prisma/prisma.module';
+import { ProductsModule } from 'src/products/products.module';
+import { UsersModule } from 'src/users/users.module';
 import { DetailsOrderService } from './details-order.service';
 import { DetailsResolver } from './details.resolver';
 
 @Module({
   providers: [
     DetailsResolver,
-    PrismaService,
     DetailsOrderService,
-    DetailsResolver,
-    ProductsService,
     PaginationService,
-    CategoriesService,
-    UsersService,
     OrdersService,
   ],
+  exports: [DetailsOrderService],
+  imports: [PrismaModule, ProductsModule, CategoriesModule, UsersModule],
 })
 export class DetailsOrderModule {}

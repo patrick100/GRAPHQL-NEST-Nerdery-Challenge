@@ -1,14 +1,27 @@
 import { Order, OrderDetail, Prisma } from '.prisma/client';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  forwardRef,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
 import { plainToClass } from 'class-transformer';
 import { PrismaService } from 'prisma/prisma.service';
+import { DetailsOrderService } from 'src/details-order/details-order.service';
 import { UsersService } from 'src/users/users.service';
 import { ProductToCartDto } from './dto/request/product-to-cart.dto';
 import { OrderDto } from './dto/response/order.dto';
 
 @Injectable()
 export class OrdersService {
-  constructor(private prisma: PrismaService, private user: UsersService) {}
+  constructor(
+    // @Inject(forwardRef(() => DetailsOrderService))
+    private prisma: PrismaService,
+    private user: UsersService,
+    private moduleRef: ModuleRef,
+  ) {}
 
   async getOrderId(
     orderWhereUniqueInput: Prisma.OrderWhereUniqueInput,
@@ -122,6 +135,13 @@ export class OrdersService {
       throw new HttpException('Cart Not Found', HttpStatus.NOT_FOUND);
     }
 
+    if (!this.updateStock) {
+      throw new HttpException(
+        'Error processing your cart products',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
     const newOrder = await this.prisma.order.update({
       where: {
         uuid: cartId,
@@ -132,6 +152,38 @@ export class OrdersService {
     });
 
     return newOrder;
+  }
+
+  async updateStock(cartUuid: string): Promise<boolean> {
+    const detailService = this.moduleRef.get(DetailsOrderService, {
+      strict: false,
+    });
+    const cartDetails = await detailService.details({
+      uuid: cartUuid,
+    });
+
+    try {
+      cartDetails.forEach((detail) => {
+        this.prisma.product.update({
+          where: {
+            id: detail.productId,
+          },
+          data: {
+            stock: {
+              decrement: detail.quantity,
+            },
+          },
+        });
+      });
+    } catch (e) {
+      // throw new HttpException(
+      //   'Error processing your cart products',
+      //   HttpStatus.INTERNAL_SERVER_ERROR,
+      // );
+      return false;
+    }
+
+    return true;
   }
 
   /* Orders */

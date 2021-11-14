@@ -1,11 +1,12 @@
 import { OrderDetail, Prisma } from '.prisma/client';
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { OrdersService } from 'src/orders/orders.service';
 
 @Injectable()
 export class DetailsOrderService {
   constructor(
+    // @Inject(forwardRef(() => OrdersService))
     private prisma: PrismaService,
     private orderService: OrdersService,
   ) {}
