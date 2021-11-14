@@ -14,6 +14,11 @@ import { OrdersService } from './orders.service';
 import { ProductToCartInput } from './dto/input/product-to-cart.input';
 import { OrderDto } from './dto/response/order.dto';
 import { Order } from './models/order.model';
+import { UseGuards } from '@nestjs/common';
+import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
+import { ManagerGuard } from 'src/auth/guards/manager.guard';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import TokenPayload from 'src/interfaces/token-payload.interface';
 
 @Resolver(() => Order)
 export class CartsResolver {
@@ -24,8 +29,9 @@ export class CartsResolver {
   ) {}
 
   @Query(() => Order, { name: 'cartOfUser', nullable: true })
-  async cart(@Args('userUuid') uuid: string): Promise<OrderDto> {
-    return this.cartService.cart({ uuid: uuid });
+  @UseGuards(GqlAuthGuard)
+  async cart(@CurrentUser() user: TokenPayload): Promise<OrderDto> {
+    return this.cartService.cart({ uuid: user.uuid });
   }
 
   @ResolveField()
@@ -39,6 +45,7 @@ export class CartsResolver {
   }
 
   @Mutation(() => Detail)
+  @UseGuards(GqlAuthGuard)
   async addProductToCart(
     @Args('cartUuid') cartUuid: string,
     @Args('productData') productData: ProductToCartInput,
@@ -47,17 +54,20 @@ export class CartsResolver {
   }
 
   @Mutation(() => Order, { name: 'cartToOrders', nullable: true })
+  @UseGuards(GqlAuthGuard)
   async cartToOrders(@Args('cartUuid') cartUuid: string): Promise<OrderDto> {
     return this.cartService.cartToOrders(cartUuid);
   }
 
   /* Orders */
   @Query(() => Order, { name: 'orderOfMe', nullable: true })
+  @UseGuards(GqlAuthGuard)
   async order(@Args('orderId') uuid: string): Promise<OrderDto> {
     return this.cartService.order({ uuid: uuid });
   }
 
   @Query(() => [Order], { name: 'ordersOfUser', nullable: true })
+  @UseGuards(GqlAuthGuard, ManagerGuard)
   async ordersOfUser(@Args('userId') uuid: string): Promise<OrderDto[]> {
     return this.cartService.ordersOfUser({ uuid: uuid });
   }
