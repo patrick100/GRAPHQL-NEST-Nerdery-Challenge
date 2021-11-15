@@ -6,6 +6,7 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 import { PrismaService } from 'prisma/prisma.service';
 import { UserFactory } from 'src/common/factories/user.factory';
 import { User } from '.prisma/client';
+import { ModifyUserDto } from './dto/request/modify-user.dto';
 
 describe('UsersService', () => {
   let userService: UsersService;
@@ -71,7 +72,7 @@ describe('UsersService', () => {
     });
 
     it('should modify user info', async () => {
-      const data: Partial<User> = { firstName: 'New test name' };
+      const data = { firstName: 'New test name' };
 
       await expect(
         userService.modifyUser({ uuid: userTest.uuid }, data),

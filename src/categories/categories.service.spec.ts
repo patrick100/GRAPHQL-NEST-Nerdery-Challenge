@@ -5,6 +5,8 @@ import { CategoryFactory } from 'src/common/factories/category.factory';
 import { PaginationService } from 'src/common/services/pagination.service';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { CategoriesService } from './categories.service';
+import { CategoryDto } from './dto/response/category.dto';
+import { CollectionCategoryModel } from './models/collection-category.model';
 
 describe('CategoriesService', () => {
   let categoriesService: CategoriesService;
@@ -43,7 +45,11 @@ describe('CategoriesService', () => {
 
   describe('categories', () => {
     it('should return a list of categories', async () => {
-      const data = await categoriesService.categories({ page: 1, perPage: 1 });
+      const data: CollectionCategoryModel =
+        await categoriesService.collectionCategories({
+          page: 1,
+          perPage: 1,
+        });
       const categories = await prismaService.category.findMany({});
 
       expect(categories).toHaveLength(Number(data.pageInfo.total));
