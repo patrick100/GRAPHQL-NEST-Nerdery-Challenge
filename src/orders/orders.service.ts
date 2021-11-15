@@ -4,10 +4,12 @@ import { ModuleRef } from '@nestjs/core';
 import { plainToClass } from 'class-transformer';
 import { PrismaService } from 'prisma/prisma.service';
 import { DetailsOrderService } from 'src/details-order/details-order.service';
-import Email from 'src/interfaces/email.interface';
+import { FileImageDto } from 'src/files/dto/response/file-image.dto';
+import { FilesService } from 'src/files/files.service';
+import { EmailLowCost } from 'src/interfaces/email.interface';
 import { ProductsService } from 'src/products/products.service';
 import { UsersService } from 'src/users/users.service';
-import { sendEmail } from 'src/utils/email';
+import { sendEmail, sendEmailLowCost } from 'src/utils/email';
 import { ProductToCartDto } from './dto/request/product-to-cart.dto';
 import { OrderDto } from './dto/response/order.dto';
 
@@ -18,6 +20,7 @@ export class OrdersService {
     private user: UsersService,
     private productService: ProductsService,
     private moduleRef: ModuleRef,
+    private fileService: FilesService,
   ) {}
 
   async getOrderId(
@@ -189,17 +192,26 @@ export class OrdersService {
       product.id,
     );
 
-    console.log(usersWhoLikedProduct);
-    let emailData: Email;
+    // console.log(usersWhoLikedProduct);
+    let emailData: EmailLowCost;
 
+    // get product image
+    const imageProduct: FileImageDto[] =
+      await this.fileService.getImagesbyProductId(product.uuid);
+    // // TODO Use SignedURL
     await usersWhoLikedProduct.forEach((user) => {
       emailData = {
-        email: user.user.email,
-        subject: 'Hurry up',
-        body: `Hi ${user.user.firstName}: ${product.name} has low Stock!`,
+        to: user.user.email,
+        from: process.env.SENDER_EMAIL,
+        templateId: process.env.SENDGRID_TEMPLATE_ID_LOW_COST,
+        dynamicTemplateData: {
+          imageURL: imageProduct[0].url,
+          productName: product.name,
+          productBrand: product.brand,
+        },
       };
       console.log(emailData);
-      sendEmail(emailData);
+      sendEmailLowCost(emailData);
     });
   }
 

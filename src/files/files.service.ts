@@ -46,7 +46,7 @@ export class FilesService {
     });
   }
 
-  async getImagesbyProductId(productId: string) {
+  async getImagesbyProductId(productId: string): Promise<FileImageDto[]> {
     const s3 = new S3();
     const product = await this.prisma.product.findUnique({
       where: { uuid: productId },
@@ -63,7 +63,8 @@ export class FilesService {
 
     for (const image of images) {
       const url = await s3.getSignedUrlPromise('getObject', {
-        Bucket: process.env.AWS_PRIVATE_BUCKET_NAME,
+        // Bucket: process.env.AWS_PRIVATE_BUCKET_NAME,
+        Bucket: 'nestchallenge',
         Key: image.key,
         ResponseContentType: 'image/jpeg',
       });
@@ -77,7 +78,6 @@ export class FilesService {
 
       fileImages.push(fileImage);
     }
-
     return fileImages;
   }
 }

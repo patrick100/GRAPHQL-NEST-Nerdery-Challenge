@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { CategoriesModule } from 'src/categories/categories.module';
 import { PaginationService } from 'src/common/services/pagination.service';
 import { DetailsOrderService } from 'src/details-order/details-order.service';
+import { FilesService } from 'src/files/files.service';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { ProductsModule } from 'src/products/products.module';
 import { UsersModule } from 'src/users/users.module';
@@ -15,6 +16,7 @@ import { OrdersService } from './orders.service';
     OrdersService,
     PaginationService,
     OrdersService,
+    FilesService,
   ],
   imports: [PrismaModule, UsersModule, ProductsModule, CategoriesModule],
 })
