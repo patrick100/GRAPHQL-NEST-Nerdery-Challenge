@@ -1,23 +1,24 @@
 import { Module } from '@nestjs/common';
 import { CategoriesModule } from 'src/categories/categories.module';
 import { PaginationService } from 'src/common/services/pagination.service';
-import { DetailsOrderService } from 'src/details-order/details-order.service';
+import { DetailsOrderModule } from 'src/details-order/details-order.module';
 import { FilesService } from 'src/files/files.service';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { ProductsModule } from 'src/products/products.module';
 import { UsersModule } from 'src/users/users.module';
-import { CartsResolver } from './orders.resolver';
+import { OrdersResolver } from './orders.resolver';
 import { OrdersService } from './orders.service';
 
 @Module({
-  providers: [
-    CartsResolver,
-    DetailsOrderService,
-    OrdersService,
-    PaginationService,
-    OrdersService,
-    FilesService,
+  providers: [OrdersResolver, PaginationService, OrdersService, FilesService],
+  imports: [
+    PrismaModule,
+    UsersModule,
+    ProductsModule,
+    CategoriesModule,
+    DetailsOrderModule,
+    OrdersModule,
   ],
-  imports: [PrismaModule, UsersModule, ProductsModule, CategoriesModule],
+  exports: [OrdersService],
 })
 export class OrdersModule {}

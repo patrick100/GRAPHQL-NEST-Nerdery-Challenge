@@ -1,6 +1,5 @@
 import { Order, OrderDetail, Prisma, Product } from '.prisma/client';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
 import { plainToClass } from 'class-transformer';
 import { PrismaService } from 'prisma/prisma.service';
 import { DetailsOrderService } from 'src/details-order/details-order.service';
@@ -19,7 +18,7 @@ export class OrdersService {
     private prisma: PrismaService,
     private user: UsersService,
     private productService: ProductsService,
-    private moduleRef: ModuleRef,
+    private detailsOrderService: DetailsOrderService,
     private fileService: FilesService,
   ) {}
 
@@ -105,7 +104,7 @@ export class OrdersService {
       subtotal: product.unitPrice * productData.quantity,
     };
     // update totalprice in cart
-    const totalPrice = await this.prisma.order.update({
+    await this.prisma.order.update({
       where: {
         id: cartId.id,
       },
@@ -155,10 +154,10 @@ export class OrdersService {
   }
 
   async updateStock(cartUuid: string): Promise<boolean> {
-    const detailService = this.moduleRef.get(DetailsOrderService, {
-      strict: false,
-    });
-    const cartDetails: OrderDetail[] = await detailService.details({
+    // const detailService = this.moduleRef.get(DetailsOrderService, {
+    //   strict: false,
+    // });
+    const cartDetails: OrderDetail[] = await this.detailsOrderService.details({
       uuid: cartUuid,
     });
     try {
@@ -192,7 +191,6 @@ export class OrdersService {
       product.id,
     );
 
-    // console.log(usersWhoLikedProduct);
     let emailData: EmailLowCost;
 
     // get product image

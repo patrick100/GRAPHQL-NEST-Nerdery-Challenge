@@ -21,7 +21,7 @@ import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import TokenPayload from 'src/interfaces/token-payload.interface';
 
 @Resolver(() => Order)
-export class CartsResolver {
+export class OrdersResolver {
   constructor(
     private cartService: OrdersService,
     private userService: UsersService,

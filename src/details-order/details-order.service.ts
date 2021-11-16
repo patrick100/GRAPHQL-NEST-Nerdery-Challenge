@@ -1,30 +1,32 @@
 import { OrderDetail, Prisma } from '.prisma/client';
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
-import { OrdersService } from 'src/orders/orders.service';
 
 @Injectable()
 export class DetailsOrderService {
-  constructor(
-    // @Inject(forwardRef(() => OrdersService))
-    private prisma: PrismaService,
-    private orderService: OrdersService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async details(
     orderData: Prisma.OrderWhereUniqueInput,
   ): Promise<OrderDetail[]> {
-    let orderId: number;
+    let orderId: { id: number };
 
     if (!orderData.id) {
-      orderId = await this.orderService.getOrderId(orderData);
+      orderId = await this.prisma.order.findUnique({
+        where: {
+          ...orderData,
+        },
+        select: {
+          id: true,
+        },
+      });
     } else {
-      orderId = orderData.id;
+      orderId = { id: orderData.id };
     }
 
     return this.prisma.orderDetail.findMany({
       where: {
-        orderId: orderId,
+        orderId: orderId.id,
       },
     });
   }
