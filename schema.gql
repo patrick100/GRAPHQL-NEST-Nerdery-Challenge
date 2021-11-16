@@ -9,19 +9,198 @@ type User {
   email: String
 }
 
+type UserToken {
+  token: String!
+  user: User
+}
+
+type Category {
+  uuid: String!
+  name: String!
+  description: String
+  isEnabled: Boolean
+}
+
+type Pagination {
+  perPage: Int!
+  page: Int
+  prevPage: Int
+  nextPage: Int
+  totalPages: Int
+}
+
+type CollectionCategoryModel {
+  edges: [Category!]
+  pageInfo: Pagination!
+}
+
+type FileImage {
+  uuid: String!
+  productId: String!
+  key: String!
+  url: String!
+}
+
+type Product {
+  uuid: String!
+  name: String!
+  brand: String!
+  description: String
+  category: Category
+  categoryId: Int!
+  measurementUnit: String
+  unitPrice: Float!
+  stock: Int!
+  isEnabled: Boolean
+}
+
+type CollectionProductModel {
+  edges: [Product!]
+  pageInfo: Pagination!
+}
+
+type Detail {
+  uuid: String!
+  orderId: Float!
+  productId: Float!
+  product: Product
+  unitPrice: Float
+  quantity: Float!
+  subtotal: Float
+}
+
+type Order {
+  uuid: String!
+  userId: Float
+  user: User!
+  status: String
+  totalPrice: Float
+  createdAt: DateTime
+  updatedAt: DateTime
+  details: [Detail]!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type Query {
   me: User!
   user(uuid: String!): User!
+  categories(pagination: PaginationQueryInput!): CollectionCategoryModel
+  category(uuid: String!): Category
+  products(category: SearchByCategoryDto, pagination: PaginationQueryInput!): CollectionProductModel
+  product(uuid: String!): Product
+  getImagesProduct(uuid: String!): [FileImage!]!
+  cartOfUser: Order
+  orderOfMe(orderId: String!): Order
+  ordersOfUser(userId: String!): [Order!]
+  detail(orderUuid: String!): Detail
+}
+
+input PaginationQueryInput {
+  page: Int = 1
+  perPage: Int = 2
+}
+
+input SearchByCategoryDto {
+  categoryUuid: String!
 }
 
 type Mutation {
   updateMe(updateUserData: UpdateUserInput!): User!
   updateUser(updateUserData: UpdateUserInput!): User!
   deleteMe: User!
+  signUp(input: CreateUserInput!): User!
+  signIn(input: SignInInput!): UserToken!
+  verifyEmail(input: VerifyEmailInput!): Boolean
+  sendTokenToResetPassword(input: SendTokenResetPasswordInput!): Boolean
+  resetPassword(input: ResetPasswordInput!): Boolean
+  signOut: Boolean
+  createCategory(createCategoryData: CreateCategoryInput!): Category!
+  modifyCategory(modifyCategoryData: ModifyCategoryInput!, uuid: String!): Category!
+  deleteCategory(uuid: String!): Category!
+  createProduct(createProductData: CreateProductInput!): Product!
+  modifyProduct(modifyProductData: ModifyProductInput!, uuid: String!): Product!
+  enableProduct(uuid: String!): Product!
+  disableProduct(uuid: String!): Product!
+  deleteProduct(uuid: String!): Product!
+  uploadImgProduct(uuid: String!): FileImage!
+  giveLikeProduct(uuid: String!): Boolean
+  removeLikeProduct(uuid: String!): Boolean
+  addProductToCart(productData: ProductToCartInput!, cartUuid: String!): Detail!
+  cartToOrders(cartUuid: String!): Order
 }
 
 input UpdateUserInput {
   uuid: String!
-  firstName: String!
+  firstName: String
   lastName: String
+}
+
+input CreateUserInput {
+  firstName: String!
+  lastName: String!
+  password: String!
+  email: String!
+}
+
+input SignInInput {
+  email: String!
+  password: String!
+}
+
+input VerifyEmailInput {
+  uuid: String!
+  token: String!
+}
+
+input SendTokenResetPasswordInput {
+  email: String!
+}
+
+input ResetPasswordInput {
+  uuid: String!
+  token: String!
+  password: String!
+}
+
+input CreateCategoryInput {
+  name: String!
+  description: String
+  isEnabled: Boolean
+}
+
+input ModifyCategoryInput {
+  name: String!
+  description: String
+  isEnabled: Boolean
+}
+
+input CreateProductInput {
+  name: String!
+  brand: String!
+  description: String
+  categoryUuid: String!
+  measurementUnit: String = "unit"
+  unitPrice: Float!
+  stock: Float = 0
+  isEnabled: Boolean = true
+}
+
+input ModifyProductInput {
+  name: String
+  brand: String
+  description: String
+  category: String
+  measurementUnit: String = "unit"
+  unitPrice: Float
+  stock: Float = 0
+  isEnabled: Boolean = true
+}
+
+input ProductToCartInput {
+  productId: String!
+  quantity: Float!
 }
