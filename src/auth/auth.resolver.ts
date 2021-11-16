@@ -9,6 +9,7 @@ import { ResetPasswordInput } from './input/reset-password.input';
 import { SendTokenResetPasswordInput } from './input/send-token-reset-password.input';
 import { SignInInput } from './input/sign-in.input';
 import { VerifyEmailInput } from './input/verify-email.input';
+import { ResponseMessage } from './models/response-message';
 import { UserToken } from './models/user-token';
 
 @Resolver()
@@ -30,32 +31,41 @@ export class AuthResolver {
     return this.authService.signIn(input);
   }
 
-  @Mutation(() => Boolean, { nullable: true })
-  verifyEmail(
+  @Mutation(() => ResponseMessage, { nullable: true })
+  async verifyEmail(
     @Args({ name: 'input', type: () => VerifyEmailInput })
     input: VerifyEmailInput,
-  ): Promise<void> {
-    return this.authService.verifyEmail(input.uuid, input.token);
+  ): Promise<ResponseMessage> {
+    await this.authService.verifyEmail(input.uuid, input.token);
+    const response: ResponseMessage = { message: 'No-Content', code: 204 };
+
+    return response;
   }
 
-  @Mutation(() => Boolean, { nullable: true })
-  sendTokenToResetPassword(
+  @Mutation(() => ResponseMessage, { nullable: true })
+  async sendTokenToResetPassword(
     @Args({ name: 'input', type: () => SendTokenResetPasswordInput })
     input: SendTokenResetPasswordInput,
-  ): Promise<void> {
-    return this.authService.sendTokenToResetPassword(input.email);
+  ): Promise<ResponseMessage> {
+    await this.authService.sendTokenToResetPassword(input.email);
+    const response: ResponseMessage = { message: 'No-Content', code: 204 };
+
+    return response;
   }
 
-  @Mutation(() => Boolean, { nullable: true })
-  resetPassword(
+  @Mutation(() => ResponseMessage, { nullable: true })
+  async resetPassword(
     @Args({ name: 'input', type: () => ResetPasswordInput })
     input: ResetPasswordInput,
-  ): Promise<void> {
-    return this.authService.ResetPassword(
+  ): Promise<ResponseMessage> {
+    await this.authService.ResetPassword(
       input.uuid,
       input.token,
       input.password,
     );
+    const response: ResponseMessage = { message: 'No-Content', code: 204 };
+
+    return response;
   }
 
   @UseGuards(GqlAuthGuard)
