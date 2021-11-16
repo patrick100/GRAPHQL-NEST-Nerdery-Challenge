@@ -37,7 +37,6 @@ describe('FilesService', () => {
       providers: [
         FilesService,
         UsersService,
-        PrismaService,
         ProductFactory,
         UserFactory,
         CategoryFactory,

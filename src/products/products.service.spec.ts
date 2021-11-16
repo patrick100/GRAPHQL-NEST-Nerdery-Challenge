@@ -1,4 +1,4 @@
-import { Category, Prisma, Product } from '.prisma/client';
+import { Category, Product } from '.prisma/client';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CategoriesService } from 'src/categories/categories.service';
 import { CategoryFactory } from 'src/common/factories/category.factory';
@@ -10,12 +10,11 @@ import * as faker from 'faker';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreateProductDto } from './dto/request/create-product.dto';
+import { CollectionProductModel } from './models/collection-product.model';
 
 describe('ProductsService', () => {
   let prismaService: PrismaService;
   let productService: ProductsService;
-  let categoriesService: CategoriesService;
-  let paginationService: PaginationService;
   let categoryFactory: CategoryFactory;
   let productFactory: ProductFactory;
   let categoryTest: Category;
@@ -25,18 +24,16 @@ describe('ProductsService', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [PrismaModule],
       providers: [
-        ProductsService,
         PaginationService,
         CategoriesService,
         CategoryFactory,
         ProductFactory,
+        ProductsService,
       ],
     }).compile();
 
     productService = module.get<ProductsService>(ProductsService);
     prismaService = module.get<PrismaService>(PrismaService);
-    categoriesService = module.get<CategoriesService>(CategoriesService);
-    paginationService = module.get<PaginationService>(PaginationService);
     categoryFactory = module.get<CategoryFactory>(CategoryFactory);
     productFactory = module.get<ProductFactory>(ProductFactory);
 
@@ -58,7 +55,14 @@ describe('ProductsService', () => {
 
   describe('products', () => {
     it('should return a list of products', async () => {
-      const data = await productService.products({ page: 1, perPage: 1 });
+      const data: CollectionProductModel =
+        await productService.collectionProducts(
+          {
+            page: 1,
+            perPage: 1,
+          },
+          {},
+        );
       const products = await prismaService.product.findMany({});
 
       expect(products).toHaveLength(Number(data.pageInfo.total));
@@ -89,7 +93,7 @@ describe('ProductsService', () => {
       const data: CreateProductDto = {
         name: 'New Product',
         brand: 'The Brand',
-        category: categoryTest.uuid,
+        categoryUuid: categoryTest.uuid,
         unitPrice: 10,
         measurementUnit: 'unit',
       };
@@ -123,7 +127,7 @@ describe('ProductsService', () => {
       await expect(
         productService.modifyProduct(
           { uuid: productTest.uuid },
-          { category: faker.datatype.uuid() },
+          { categoryUuid: faker.datatype.uuid() },
         ),
       ).rejects.toThrowError(
         new HttpException('Category Not Found', HttpStatus.NOT_FOUND),
