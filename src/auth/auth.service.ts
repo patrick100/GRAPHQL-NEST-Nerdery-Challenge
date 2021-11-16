@@ -67,9 +67,13 @@ export class AuthService {
     });
 
     const emailData: Email = {
-      email: user.email,
-      subject: 'Confirm Email',
-      body: `Send this request via PATCH: URL_BASE/verify-email/${user.uuid}/${emailVerifiedToken}`,
+      to: user.email,
+      from: process.env.SENDER_EMAIL,
+      templateId: process.env.SENDGRID_TEMPLATE_ID_SEND_EMAIL,
+      dynamicTemplateData: {
+        subject: 'Confirm Email',
+        body: `Send this request via PATCH: URL_BASE/verify-email/${user.uuid}/${emailVerifiedToken}`,
+      },
     };
 
     sendEmail(emailData);
@@ -116,11 +120,16 @@ export class AuthService {
     }
 
     const tokenResetPassword = crypto.randomBytes(12).toString('hex');
+
     const emailData: Email = {
-      email: user.email,
-      subject: 'Reset Password',
-      body: `Send this request via PATCH: URL_BASE/password-reset/${user.uuid}/${tokenResetPassword}
-      with the password in the body example: {password:newpassword}`,
+      to: user.email,
+      from: process.env.SENDER_EMAIL,
+      templateId: process.env.SENDGRID_TEMPLATE_ID_SEND_EMAIL,
+      dynamicTemplateData: {
+        subject: 'Reset Password',
+        body: `Send this request via PATCH: URL_BASE/password-reset/${user.uuid}/${tokenResetPassword}
+        with the password in the body example: {password:newpassword}`,
+      },
     };
 
     sendEmail(emailData);

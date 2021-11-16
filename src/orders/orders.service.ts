@@ -5,10 +5,10 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { DetailsOrderService } from 'src/details-order/details-order.service';
 import { FileImageDto } from 'src/files/dto/response/file-image.dto';
 import { FilesService } from 'src/files/files.service';
-import { EmailLowCost } from 'src/interfaces/email.interface';
+import { Email } from 'src/interfaces/email.interface';
 import { ProductsService } from 'src/products/products.service';
 import { UsersService } from 'src/users/users.service';
-import { sendEmail, sendEmailLowCost } from 'src/utils/email';
+import { sendEmail } from 'src/utils/email';
 import { ProductToCartDto } from './dto/request/product-to-cart.dto';
 import { OrderDto } from './dto/response/order.dto';
 
@@ -191,7 +191,7 @@ export class OrdersService {
       product.id,
     );
 
-    let emailData: EmailLowCost;
+    let emailData: Email;
 
     // get product image
     const imageProduct: FileImageDto[] =
@@ -209,7 +209,7 @@ export class OrdersService {
         },
       };
       console.log(emailData);
-      sendEmailLowCost(emailData);
+      sendEmail(emailData);
     });
   }
 
