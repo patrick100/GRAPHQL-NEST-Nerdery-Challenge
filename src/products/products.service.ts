@@ -1,6 +1,6 @@
 import { Category, Prisma, Product } from '.prisma/client';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { PrismaService } from 'prisma/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { CreateProductDto } from './dto/request/create-product.dto';
 import { ModifyProductDto } from './dto/request/modify-product.dto';
@@ -37,7 +37,6 @@ export class ProductsService {
     categoryData: SearchByCategoryDto,
   ): Promise<ProductDto[]> {
     const { categoryUuid } = categoryData;
-    // const { page, perPage } = params;
     const { skip, take } = this.pagination.paginatedHelper(params);
 
     let products: Product[];

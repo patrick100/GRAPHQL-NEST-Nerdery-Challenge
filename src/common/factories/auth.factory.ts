@@ -1,6 +1,6 @@
 import { Prisma, User } from '.prisma/client';
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'prisma/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { AbstractFactory } from './abstract.factory';
 import * as faker from 'faker';
 

@@ -1,7 +1,7 @@
 import { Category, Product, User } from '.prisma/client';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as faker from 'faker';
-import { PrismaService } from 'prisma/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CategoryFactory } from 'src/common/factories/category.factory';
 import { ProductFactory } from 'src/common/factories/product.factory';
 import { UserFactory } from 'src/common/factories/user.factory';

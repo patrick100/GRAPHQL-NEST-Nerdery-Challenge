@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { S3 } from 'aws-sdk';
 import { v4 as uuid } from 'uuid';
-import { PrismaService } from 'prisma/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { UsersService } from 'src/users/users.service';
 import { plainToClass } from 'class-transformer';
 import { FileImageDto } from './dto/response/file-image.dto';

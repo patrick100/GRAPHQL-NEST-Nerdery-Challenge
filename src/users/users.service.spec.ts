@@ -3,7 +3,7 @@ import { UsersService } from './users.service';
 import * as faker from 'faker';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { PrismaModule } from 'src/prisma/prisma.module';
-import { PrismaService } from 'prisma/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { UserFactory } from 'src/common/factories/user.factory';
 import { User } from '.prisma/client';
 import { ModifyUserDto } from './dto/request/modify-user.dto';

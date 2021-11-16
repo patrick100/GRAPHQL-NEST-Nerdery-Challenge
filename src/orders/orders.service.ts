@@ -1,7 +1,7 @@
 import { Order, OrderDetail, Prisma, Product } from '.prisma/client';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
-import { PrismaService } from 'prisma/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { DetailsOrderService } from 'src/details-order/details-order.service';
 import { FileImageDto } from 'src/files/dto/response/file-image.dto';
 import { FilesService } from 'src/files/files.service';

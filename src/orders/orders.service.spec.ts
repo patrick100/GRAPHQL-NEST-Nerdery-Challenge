@@ -1,10 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CategoriesService } from 'src/categories/categories.service';
+import { CategoriesModule } from 'src/categories/categories.module';
 import { PaginationService } from 'src/common/services/pagination.service';
 import { FilesService } from 'src/files/files.service';
 import { PrismaModule } from 'src/prisma/prisma.module';
-import { ProductsService } from 'src/products/products.service';
-import { UsersService } from 'src/users/users.service';
+import { ProductsModule } from 'src/products/products.module';
+import { UsersModule } from 'src/users/users.module';
+import { OrdersModule } from './orders.module';
 import { OrdersService } from './orders.service';
 
 describe('OrdersService', () => {
@@ -12,15 +13,14 @@ describe('OrdersService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [PrismaModule],
-      providers: [
-        OrdersService,
-        UsersService,
-        ProductsService,
-        FilesService,
-        PaginationService,
-        CategoriesService,
+      imports: [
+        PrismaModule,
+        OrdersModule,
+        UsersModule,
+        ProductsModule,
+        CategoriesModule,
       ],
+      providers: [FilesService, PaginationService],
     }).compile();
 
     service = module.get<OrdersService>(OrdersService);

@@ -8,9 +8,10 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 import { ProductsService } from './products.service';
 import * as faker from 'faker';
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { PrismaService } from 'prisma/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateProductDto } from './dto/request/create-product.dto';
 import { CollectionProductModel } from './models/collection-product.model';
+import { _ } from 'lodash';
 
 describe('ProductsService', () => {
   let prismaService: PrismaService;
@@ -102,7 +103,7 @@ describe('ProductsService', () => {
 
       expect(spy).toBeCalledWith({
         data: {
-          ...data,
+          ..._.omit(data, ['categoryUuid']),
           category: { connect: { id: categoryTest.id } },
         },
       });

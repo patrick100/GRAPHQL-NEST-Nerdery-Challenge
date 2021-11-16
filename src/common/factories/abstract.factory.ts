@@ -1,4 +1,4 @@
-import { PrismaService } from 'prisma/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 export abstract class AbstractFactory<T> {
   protected abstract readonly prismaService: PrismaService;

@@ -1,6 +1,6 @@
 import { Category, Prisma } from '.prisma/client';
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaService } from 'prisma/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CategoryFactory } from 'src/common/factories/category.factory';
 import { PaginationService } from 'src/common/services/pagination.service';
 import { PrismaModule } from 'src/prisma/prisma.module';

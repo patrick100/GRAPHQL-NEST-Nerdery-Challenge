@@ -89,6 +89,7 @@
     "typescript": "^4.3.5"
   },
   "jest": {
+    "modulePathIgnorePatterns": [],
     "moduleFileExtensions": [
       "js",
       "json",
@@ -105,9 +106,10 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "moduleDirectories": [
-      "node_modules",
-      "src",
-      "."
-    ]
+      "node_modules"
+    ],
+    "moduleNameMapper": {
+      "^src/(.*)$": "<rootDir>/../src/$1"
+    }
   }
 }
