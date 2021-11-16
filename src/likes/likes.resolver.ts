@@ -2,6 +2,7 @@ import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
+import { ResponseMessage } from 'src/common/models/response-message';
 import TokenPayload from 'src/interfaces/token-payload.interface';
 import { LikesService } from './likes.service';
 
@@ -9,21 +10,27 @@ import { LikesService } from './likes.service';
 export class LikesResolver {
   constructor(private readonly likeService: LikesService) {}
 
-  @Mutation(() => Boolean, { nullable: true })
+  @Mutation(() => ResponseMessage, { nullable: true })
   @UseGuards(GqlAuthGuard)
-  giveLikeProduct(
+  async giveLikeProduct(
     @CurrentUser() user: TokenPayload,
     @Args('uuid') uuid: string,
-  ): Promise<void> {
-    return this.likeService.giveLikeProduct(user.uuid, uuid);
+  ): Promise<ResponseMessage> {
+    await this.likeService.giveLikeProduct(user.uuid, uuid);
+    const response: ResponseMessage = { message: 'No-Content', code: 204 };
+
+    return response;
   }
 
-  @Mutation(() => Boolean, { nullable: true })
+  @Mutation(() => ResponseMessage, { nullable: true })
   @UseGuards(GqlAuthGuard)
-  removeLikeProduct(
+  async removeLikeProduct(
     @CurrentUser() user: TokenPayload,
     @Args('uuid') uuid: string,
-  ): Promise<void> {
-    return this.likeService.removeLikeProduct(user.uuid, uuid);
+  ): Promise<ResponseMessage> {
+    await this.likeService.removeLikeProduct(user.uuid, uuid);
+    const response: ResponseMessage = { message: 'No-Content', code: 204 };
+
+    return response;
   }
 }

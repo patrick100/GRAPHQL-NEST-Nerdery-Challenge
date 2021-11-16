@@ -9,7 +9,7 @@ import { ResetPasswordInput } from './input/reset-password.input';
 import { SendTokenResetPasswordInput } from './input/send-token-reset-password.input';
 import { SignInInput } from './input/sign-in.input';
 import { VerifyEmailInput } from './input/verify-email.input';
-import { ResponseMessage } from './models/response-message';
+import { ResponseMessage } from '../common/models/response-message';
 import { UserToken } from './models/user-token';
 
 @Resolver()
