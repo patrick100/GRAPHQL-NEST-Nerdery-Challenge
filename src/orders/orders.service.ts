@@ -5,7 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { DetailsOrderService } from 'src/details-order/details-order.service';
 import { FileImageDto } from 'src/files/dto/response/file-image.dto';
 import { FilesService } from 'src/files/files.service';
-import { Email } from 'src/interfaces/email.interface';
+import { Email } from 'src/common/interfaces/email.interface';
 import { ProductsService } from 'src/products/products.service';
 import { UsersService } from 'src/users/users.service';
 import { sendEmail } from 'src/utils/email';

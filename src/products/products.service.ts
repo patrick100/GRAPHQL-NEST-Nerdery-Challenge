@@ -12,7 +12,7 @@ import { CategoriesService } from 'src/categories/categories.service';
 import { SearchByCategoryDto } from './dto/request/search-by-category.dto';
 import { ProductDto } from './dto/response/product.dto';
 import { CollectionProductModel } from './models/collection-product.model';
-import userInfoEmail from 'src/interfaces/user-emai.interface';
+import userInfoEmail from 'src/common/interfaces/user-emai.interface';
 
 @Injectable()
 export class ProductsService {
