@@ -19,6 +19,7 @@ import { DetailsOrderModule } from './details-order/details-order.module';
     GraphQLModule.forRoot({
       autoSchemaFile: 'schema.gql',
       playground: true,
+      introspection: true,
     }),
     UsersModule,
     AuthModule,
