@@ -197,7 +197,7 @@ export class OrdersService {
     const imageProduct: FileImageDto[] =
       await this.fileService.getImagesbyProductId(product.uuid);
 
-    await usersWhoLikedProduct.forEach((user) => {
+    usersWhoLikedProduct.forEach((user) => {
       emailData = {
         to: user.user.email,
         from: process.env.SENDER_EMAIL,

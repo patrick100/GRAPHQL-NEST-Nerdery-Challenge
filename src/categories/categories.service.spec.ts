@@ -5,7 +5,6 @@ import { CategoryFactory } from 'src/common/factories/category.factory';
 import { PaginationService } from 'src/common/services/pagination.service';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { CategoriesService } from './categories.service';
-import { CategoryDto } from './dto/response/category.dto';
 import { CollectionCategoryModel } from './models/collection-category.model';
 
 describe('CategoriesService', () => {
@@ -13,7 +12,6 @@ describe('CategoriesService', () => {
   let prismaService: PrismaService;
   let categoryFactory: CategoryFactory;
   let categoryTest: Category;
-  let arrayCategoryTest: Category[];
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -26,7 +24,7 @@ describe('CategoriesService', () => {
     categoryFactory = module.get<CategoryFactory>(CategoryFactory);
 
     categoryTest = await categoryFactory.make({});
-    arrayCategoryTest = await categoryFactory.makeMany(5, {});
+    await categoryFactory.makeMany(5, {});
   });
 
   it('should be defined', () => {

@@ -75,7 +75,6 @@ describe('OrdersService', () => {
   afterAll(async () => {
     await prismaService.clearDatabase();
     await prismaService.$disconnect();
-    // await module.close();
   });
 
   it('should be defined', () => {
@@ -122,7 +121,6 @@ describe('OrdersService', () => {
     it('should retrieve user cart info', async () => {
       const userNew = await userFactory.make({});
       const cart = await orderFactory.make({
-        // status: Status.ONCART,
         clientId: { connect: { id: userNew.id } },
       });
       const newOrder = await orderService.cart({
@@ -150,21 +148,6 @@ describe('OrdersService', () => {
       });
     });
   });
-
-  // describe('cartDetail', () => {
-  //   it('should retrieve the cart detail', async () => {
-  //     const data = await orderService.cartDetail({
-  //       orderId: orderTest.id,
-  //     });
-  //     const products = await prismaService.orderDetail.findMany({
-  //       where: {
-  //         orderId: orderTest.id,
-  //       },
-  //     });
-
-  //     expect(products).toHaveLength(data.length);
-  //   });
-  // });
 
   describe('addProductToCart', () => {
     it('should throw an exception if cart doesnt exist', async () => {
@@ -246,21 +229,4 @@ describe('OrdersService', () => {
       });
     });
   });
-
-  // describe('orderDetail', () => {
-  //   it('should throw an exception if order doesnt exist', async () => {
-  //     await expect(
-  //       orderService.orderDetail(faker.datatype.uuid()),
-  //     ).rejects.toThrowError(
-  //       new HttpException('Order Not Found', HttpStatus.NOT_FOUND),
-  //     );
-  //   });
-
-  //   it('should retrieve the order detail', async () => {
-  //     // const data = await orderService.orderDetail(orderTest.uuid);
-  //     const order = await orderService.orderDetail(orderTest.uuid);
-
-  //     expect(order.detail[0].orderId).toBe(orderTest.id);
-  //   });
-  // });
 });

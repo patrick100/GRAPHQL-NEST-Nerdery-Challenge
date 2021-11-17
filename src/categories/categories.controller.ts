@@ -29,9 +29,7 @@ export class CategoriesController {
   async categories(
     @Query() paginationQuery: PaginationQueryDto,
   ): Promise<CollectionCategoryModel> {
-    const categories = await this.categoryService.categories(paginationQuery);
-
-    return categories;
+    return this.categoryService.categories(paginationQuery);
   }
 
   @UseGuards(JwtAuthGuard, ManagerGuard)

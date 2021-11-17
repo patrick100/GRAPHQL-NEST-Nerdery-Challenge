@@ -1,11 +1,6 @@
-import { ModuleRef } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CategoriesService } from 'src/categories/categories.service';
-import { Pagination } from 'src/common/models/pagination.model';
 import { DetailsOrderService } from './details-order.service';
-import * as faker from 'faker';
-import { HttpException } from '@nestjs/common';
 import { UserFactory } from 'src/common/factories/user.factory';
 import { Category, Order, Product, Status, User } from '.prisma/client';
 import { OrderDetailFactory } from 'src/common/factories/order-detail.factory';

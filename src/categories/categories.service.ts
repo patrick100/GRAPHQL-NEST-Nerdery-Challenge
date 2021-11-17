@@ -51,7 +51,7 @@ export class CategoriesService {
 
   async category(
     categoryWhereUniqueInput: Prisma.CategoryWhereUniqueInput,
-  ): Promise<Category | null> {
+  ): Promise<Category> {
     return this.prisma.category.findUnique({
       where: categoryWhereUniqueInput,
     });

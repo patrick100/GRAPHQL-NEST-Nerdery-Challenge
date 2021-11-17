@@ -14,7 +14,6 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ManagerGuard } from 'src/auth/guards/manager.guard';
 import { DetailsOrderService } from 'src/details-order/details-order.service';
 import { DetailDto } from 'src/details-order/dto/response/detail.dto';
-import { OrderWithDetailDto } from 'src/OLD/dto/response/order-with-detail.dto';
 import { ProductToCartDto } from './dto/request/product-to-cart.dto';
 import { OrderDto } from './dto/response/order.dto';
 import { OrdersService } from './orders.service';
@@ -57,10 +56,7 @@ export class OrdersController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me/orders/:orderId')
-  async order(
-    @Request() req,
-    @Param('orderId') orderId: string,
-  ): Promise<OrderDetail[]> {
+  async order(@Param('orderId') orderId: string): Promise<OrderDetail[]> {
     return this.detailService.details({ uuid: orderId });
   }
 
