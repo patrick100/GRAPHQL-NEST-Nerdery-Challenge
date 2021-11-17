@@ -30,7 +30,7 @@ This project is a challenge to create a GraphQL-API using Nest framework with Pr
 
 - [Demo REST](https://ravn-nest-challenge.herokuapp.com/api)
 
-- [Demo GraphQL](https://ravn-nest-challenge.herokuapp.com/api)
+- [Demo GraphQL](https://ravn-nest-challenge.herokuapp.com/graphql)
 
 ## Installation
 
