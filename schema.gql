@@ -114,7 +114,7 @@ input SearchByCategoryInput {
 }
 
 type Mutation {
-  updateMe(updateUserData: UpdateUserInput!): User!
+  updateMe(updateUserData: UpdateMeInput!): User!
   updateUser(updateUserData: UpdateUserInput!): User!
   deleteMe: User!
   signUp(input: CreateUserInput!): User!
@@ -136,6 +136,11 @@ type Mutation {
   removeLikeProduct(uuid: String!): ResponseMessage
   addProductToCart(productData: ProductToCartInput!, cartUuid: String!): Detail!
   cartToOrders(cartUuid: String!): Order
+}
+
+input UpdateMeInput {
+  firstName: String
+  lastName: String
 }
 
 input UpdateUserInput {
