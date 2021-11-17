@@ -24,11 +24,13 @@
 
 ## Description
 
-This project is a challenge to create a REST-API using Nest framework with Prisma ORM.
+This project is a challenge to create a GraphQL-API using Nest framework with Prisma ORM.
 
-## Demo:
+## Demos:
 
-[Demo Link](https://ravn-nest-challenge.herokuapp.com/api)
+- [Demo REST](https://ravn-nest-challenge.herokuapp.com/api)
+
+- [Demo GraphQL](https://ravn-nest-challenge.herokuapp.com/api)
 
 ## Installation
 
@@ -46,6 +48,8 @@ JWT_SECRET=
 JWT_EXPIRES_IN=
 SENDGRID_API_KEY=
 SENDER_EMAIL=
+SENDGRID_TEMPLATE_ID_LOW_COST=
+SENDGRID_TEMPLATE_ID_SEND_EMAIL=
 AWS_REGION=
 AWS_ACCESS_KEY_ID=
 AWS_SECRET_ACCESS_KEY=
