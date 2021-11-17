@@ -5,6 +5,7 @@ import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
 import { ManagerGuard } from 'src/auth/guards/manager.guard';
 import TokenPayload from 'src/common/interfaces/token-payload.interface';
 import { GetUserArgs } from './dto/args/get-user.args';
+import { UpdateMeInput } from './dto/input/update-me.input';
 import { UpdateUserInput } from './dto/input/update-user.input';
 import { User } from './models/user';
 import { UsersService } from './users.service';
@@ -29,7 +30,7 @@ export class UsersResolver {
   @UseGuards(GqlAuthGuard)
   updateMe(
     @CurrentUser() user: TokenPayload,
-    @Args('updateUserData') updateUserData: UpdateUserInput,
+    @Args('updateUserData') updateUserData: UpdateMeInput,
   ): Promise<User> {
     return this.userService.modifyUser({ uuid: user.uuid }, updateUserData);
   }
