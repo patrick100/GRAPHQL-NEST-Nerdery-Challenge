@@ -15,24 +15,24 @@ import { plainToClass } from 'class-transformer';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ManagerGuard } from 'src/auth/guards/manager.guard';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
-import { QueueCollectionDto } from 'src/common/dto/queue-collection.dto';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/request/create-category.dto';
 import { ModifyCategoryDto } from './dto/request/modify-category.dto';
 import { CategoryDto } from './dto/response/category.dto';
+import { CollectionCategoryModel } from './models/collection-category.model';
 
 @ApiTags('Categories')
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoryService: CategoriesService) {}
-  // @Get()
-  // async categories(
-  //   @Query() paginationQuery: PaginationQueryDto,
-  // ): Promise<QueueCollectionDto> {
-  //   const categories = await this.categoryService.categories(paginationQuery);
+  @Get()
+  async categories(
+    @Query() paginationQuery: PaginationQueryDto,
+  ): Promise<CollectionCategoryModel> {
+    const categories = await this.categoryService.categories(paginationQuery);
 
-  //   return categories;
-  // }
+    return categories;
+  }
 
   @UseGuards(JwtAuthGuard, ManagerGuard)
   @HttpCode(201)
