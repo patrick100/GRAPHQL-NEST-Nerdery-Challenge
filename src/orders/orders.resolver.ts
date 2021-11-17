@@ -18,7 +18,7 @@ import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
 import { ManagerGuard } from 'src/auth/guards/manager.guard';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
-import TokenPayload from 'src/interfaces/token-payload.interface';
+import TokenPayload from 'src/common/interfaces/token-payload.interface';
 
 @Resolver(() => Order)
 export class OrdersResolver {

@@ -12,8 +12,8 @@ import { CategoriesService } from 'src/categories/categories.service';
 import { SearchByCategoryInput } from './dto/input/search-by-category.input';
 import { ProductDto } from './dto/response/product.dto';
 import { CollectionProductModel } from './models/collection-product.model';
-import userInfoEmail from 'src/interfaces/user-emai.interface';
 import { PaginationSearchByCategoryDto } from './dto/request/pagination-search-by-category.dto';
+import userInfoEmail from 'src/common/interfaces/user-emai.interface';
 
 @Injectable()
 export class ProductsService {
@@ -36,7 +36,6 @@ export class ProductsService {
   async collectionProductsForController(
     params: PaginationSearchByCategoryDto,
   ): Promise<CollectionProductModel> {
-    const { page, perPage } = params;
     const { category: categoryData } = params;
     const edges = await this.products(params, { categoryUuid: categoryData });
     const pageInfo = await this.productsPageInfo(params, {

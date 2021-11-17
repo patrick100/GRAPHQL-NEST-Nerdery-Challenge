@@ -38,8 +38,8 @@ model Category {
   description String?   @db.Text
   isEnabled   Boolean   @default(true) @map("is_enabled")
   products    Product[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   @@map(name: "categories")
 }
@@ -59,7 +59,7 @@ model Product {
   likeCounter     Int?          @default(0) @map("like_counter")
   likeProducts    LikeProduct[]
   orderDetails    OrderDetail[]
-  images    Image[]
+  images          Image[]
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 
@@ -67,26 +67,26 @@ model Product {
 }
 
 model Image {
-  id         Int           @id @default(autoincrement())
-  uuid       String        @unique @default(uuid()) @db.Uuid
-  productId  Int           @map("product_id")
-  product    Product       @relation(fields: [productId], references: [id])
-  userId     Int           @map("user_id")
-  user       User          @relation(fields: [userId], references: [id])              
-  key        String        @unique
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
+  id        Int      @id @default(autoincrement())
+  uuid      String   @unique @default(uuid()) @db.Uuid
+  productId Int      @map("product_id")
+  product   Product  @relation(fields: [productId], references: [id])
+  userId    Int      @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  key       String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map(name: "images")
 }
 
 model LikeProduct {
-  id        Int     @id @default(autoincrement())
-  uuid      String  @unique @default(uuid()) @db.Uuid
-  userId    Int     @map("user_id")
-  user      User    @relation(fields: [userId], references: [id])
-  productId Int     @map("product_id")
-  product   Product @relation(fields: [productId], references: [id])
+  id        Int      @id @default(autoincrement())
+  uuid      String   @unique @default(uuid()) @db.Uuid
+  userId    Int      @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  productId Int      @map("product_id")
+  product   Product  @relation(fields: [productId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -109,15 +109,15 @@ model Order {
 }
 
 model OrderDetail {
-  id      Int    @id @default(autoincrement())
-  uuid    String @unique @default(uuid()) @db.Uuid
-  order   Order  @relation(fields: [orderId], references: [id])
-  orderId Int
-  product   Product @relation(fields: [productId], references: [id])
+  id        Int      @id @default(autoincrement())
+  uuid      String   @unique @default(uuid()) @db.Uuid
+  order     Order    @relation(fields: [orderId], references: [id])
+  orderId   Int
+  product   Product  @relation(fields: [productId], references: [id])
   productId Int
-  unitPrice Int?    @default(0) @map("unit_price")
-  quantity  Int     @default(0)
-  subtotal  Int?    @default(0)
+  unitPrice Int?     @default(0) @map("unit_price")
+  quantity  Int      @default(0)
+  subtotal  Int?     @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -128,7 +128,7 @@ model Token {
   id        Int      @id @default(autoincrement())
   token     String   @unique
   user      User     @relation(fields: [userUuid], references: [uuid])
-  userUuid  String   @db.Uuid @map("user_uuid")
+  userUuid  String   @map("user_uuid") @db.Uuid
   expiredAt String   @db.VarChar(5)
   createdAt DateTime @default(now())
 

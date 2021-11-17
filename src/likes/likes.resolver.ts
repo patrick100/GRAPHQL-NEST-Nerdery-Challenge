@@ -3,7 +3,7 @@ import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { GqlAuthGuard } from 'src/auth/guards/gql-auth.guard';
 import { ResponseMessage } from 'src/common/models/response-message';
-import TokenPayload from 'src/interfaces/token-payload.interface';
+import TokenPayload from 'src/common/interfaces/token-payload.interface';
 import { LikesService } from './likes.service';
 
 @Resolver()
