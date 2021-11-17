@@ -91,7 +91,7 @@ export class ProductsResolver {
 
   @UseGuards(GqlAuthGuard)
   @Mutation(() => FileImage)
-  async uploadImgProduct(
+  async getSignedUrlProduct(
     @CurrentUser() user: TokenPayload,
     @Args('uuid') uuid: string,
   ): Promise<FileImage> {
