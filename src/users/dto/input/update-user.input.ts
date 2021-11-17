@@ -3,10 +3,6 @@ import { IsOptional, IsString } from 'class-validator';
 
 @InputType()
 export class UpdateUserInput {
-  @Field()
-  @IsString()
-  uuid: string;
-
   @Field({ nullable: true })
   @IsString()
   @IsOptional()
