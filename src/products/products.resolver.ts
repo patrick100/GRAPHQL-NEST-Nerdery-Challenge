@@ -89,7 +89,7 @@ export class ProductsResolver {
     return this.productService.deleteProduct({ uuid: uuid });
   }
 
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard, ManagerGuard)
   @Mutation(() => FileImage)
   async getSignedUrlProduct(
     @CurrentUser() user: TokenPayload,
