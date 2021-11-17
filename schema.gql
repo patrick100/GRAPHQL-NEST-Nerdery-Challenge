@@ -131,7 +131,7 @@ type Mutation {
   enableProduct(uuid: String!): Product!
   disableProduct(uuid: String!): Product!
   deleteProduct(uuid: String!): Product!
-  uploadImgProduct(uuid: String!): FileImage!
+  getSignedUrlProduct(uuid: String!): FileImage!
   giveLikeProduct(uuid: String!): ResponseMessage
   removeLikeProduct(uuid: String!): ResponseMessage
   addProductToCart(productData: ProductToCartInput!, cartUuid: String!): Detail!
