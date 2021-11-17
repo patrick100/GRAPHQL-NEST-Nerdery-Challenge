@@ -21,6 +21,7 @@ import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import TokenPayload from 'src/common/interfaces/token-payload.interface';
 
 @Resolver(() => Order)
+@UseGuards(GqlAuthGuard)
 export class OrdersResolver {
   constructor(
     private cartService: OrdersService,
@@ -29,7 +30,6 @@ export class OrdersResolver {
   ) {}
 
   @Query(() => Order, { name: 'cartOfUser', nullable: true })
-  @UseGuards(GqlAuthGuard)
   async cart(@CurrentUser() user: TokenPayload): Promise<OrderDto> {
     return this.cartService.cart({ uuid: user.uuid });
   }
@@ -45,7 +45,6 @@ export class OrdersResolver {
   }
 
   @Mutation(() => Detail)
-  @UseGuards(GqlAuthGuard)
   async addProductToCart(
     @Args('cartUuid') cartUuid: string,
     @Args('productData') productData: ProductToCartInput,
@@ -54,20 +53,18 @@ export class OrdersResolver {
   }
 
   @Mutation(() => Order, { name: 'cartToOrders', nullable: true })
-  @UseGuards(GqlAuthGuard)
   async cartToOrders(@Args('cartUuid') cartUuid: string): Promise<OrderDto> {
     return this.cartService.cartToOrders(cartUuid);
   }
 
   /* Orders */
   @Query(() => Order, { name: 'orderOfMe', nullable: true })
-  @UseGuards(GqlAuthGuard)
   async order(@Args('orderId') uuid: string): Promise<OrderDto> {
     return this.cartService.order({ uuid: uuid });
   }
 
   @Query(() => [Order], { name: 'ordersOfUser', nullable: true })
-  @UseGuards(GqlAuthGuard, ManagerGuard)
+  @UseGuards(ManagerGuard)
   async ordersOfUser(@Args('userId') uuid: string): Promise<OrderDto[]> {
     return this.cartService.ordersOfUser({ uuid: uuid });
   }

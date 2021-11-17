@@ -161,19 +161,12 @@ export class ProductsService {
       }
     }
 
-    let data: Prisma.ProductUpdateInput;
-    if (productData.categoryUuid) {
-      data = {
-        ...productData,
-        category: { connect: { id: category.id } },
-      };
-    } else {
-      data = _.omit(productData, ['category']);
-    }
-
     return this.prisma.product.update({
       where: productWhereUniqueInput,
-      data: data,
+      data: {
+        ...productData,
+        category: { connect: { uuid: category.uuid } },
+      },
     });
   }
 
