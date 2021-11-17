@@ -1,6 +1,6 @@
 import { Category, LikeProduct, Product, User } from '.prisma/client';
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from 'src/common/prisma/prisma.service';
 import { CategoryFactory } from 'src/common/factories/category.factory';
 import { LikeFactory } from 'src/common/factories/like.factory';
 import { ProductFactory } from 'src/common/factories/product.factory';

@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaModule } from 'src/prisma/prisma.module';
+import { PrismaModule } from 'src/common/prisma/prisma.module';
 import { OrdersService } from './orders.service';
 import * as faker from 'faker';
 import { HttpException, HttpStatus } from '@nestjs/common';
@@ -10,7 +10,7 @@ import { OrderDetailFactory } from 'src/common/factories/order-detail.factory';
 import { ProductFactory } from 'src/common/factories/product.factory';
 import { CategoryFactory } from 'src/common/factories/category.factory';
 import { plainToClass } from 'class-transformer';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from 'src/common/prisma/prisma.service';
 import { OrderDto } from './dto/response/order.dto';
 import { ProductToCartDto } from './dto/request/product-to-cart.dto';
 import { OrdersModule } from './orders.module';

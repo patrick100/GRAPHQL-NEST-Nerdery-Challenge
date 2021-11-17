@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from 'src/common/prisma/prisma.service';
 import { DetailsOrderService } from './details-order.service';
 import { UserFactory } from 'src/common/factories/user.factory';
 import { Category, Order, Product, Status, User } from '.prisma/client';

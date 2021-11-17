@@ -2,7 +2,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import { TransformInterceptor } from './utils/transform.interceptor';
+import { TransformInterceptor } from './common/utils/transform.interceptor';
 import { config } from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
 

@@ -1,7 +1,7 @@
 import { Category, Prisma } from '.prisma/client';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from 'src/common/prisma/prisma.service';
 import { PaginationQueryInput } from 'src/common/dto/input/pagination-query.input';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';

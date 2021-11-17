@@ -1,11 +1,11 @@
 import { Category, Product, User } from '.prisma/client';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as faker from 'faker';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from 'src/common/prisma/prisma.service';
 import { CategoryFactory } from 'src/common/factories/category.factory';
 import { ProductFactory } from 'src/common/factories/product.factory';
 import { UserFactory } from 'src/common/factories/user.factory';
-import { PrismaModule } from 'src/prisma/prisma.module';
+import { PrismaModule } from 'src/common/prisma/prisma.module';
 import { UsersService } from 'src/users/users.service';
 import { FileImageDto } from './dto/response/file-image.dto';
 import { FilesService } from './files.service';

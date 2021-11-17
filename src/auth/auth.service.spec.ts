@@ -4,7 +4,7 @@ import { AuthService } from './auth.service';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from 'src/users/users.module';
 import { PassportModule } from '@nestjs/passport';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from 'src/common/prisma/prisma.service';
 import { plainToClass } from 'class-transformer';
 import { CreateUserDto } from 'src/users/dto/request/create-user.dto';
 import { User } from '@prisma/client';

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PaginationService } from 'src/common/services/pagination.service';
-import { PrismaModule } from 'src/prisma/prisma.module';
+import { PrismaModule } from 'src/common/prisma/prisma.module';
 import { UsersService } from 'src/users/users.service';
 import { CategoriesController } from './categories.controller';
 import { CategoriesService } from './categories.service';

@@ -1,14 +1,14 @@
 import { Order, OrderDetail, Prisma, Product } from '.prisma/client';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from 'src/common/prisma/prisma.service';
 import { DetailsOrderService } from 'src/details-order/details-order.service';
-import { FileImageDto } from 'src/files/dto/response/file-image.dto';
-import { FilesService } from 'src/files/files.service';
+import { FileImageDto } from 'src/common/files/dto/response/file-image.dto';
+import { FilesService } from 'src/common/files/files.service';
 import { Email } from 'src/common/interfaces/email.interface';
 import { ProductsService } from 'src/products/products.service';
 import { UsersService } from 'src/users/users.service';
-import { sendEmail } from 'src/utils/email';
+import { sendEmail } from 'src/common/utils/email';
 import { ProductToCartDto } from './dto/request/product-to-cart.dto';
 import { OrderDto } from './dto/response/order.dto';
 

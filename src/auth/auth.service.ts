@@ -2,13 +2,13 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from 'src/common/prisma/prisma.service';
 import { UsersService } from 'src/users/users.service';
 import { SignInDto } from './dto/request/sign-in.dto';
 import AuthData from '../common/interfaces/auth-data.interface';
 import { Token, User } from '@prisma/client';
 import { CreateUserDto } from 'src/users/dto/request/create-user.dto';
-import { sendEmail } from '../utils/email';
+import { sendEmail } from '../common/utils/email';
 import { Email } from 'src/common/interfaces/email.interface';
 
 @Injectable()

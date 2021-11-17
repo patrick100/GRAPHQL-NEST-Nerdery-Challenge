@@ -20,8 +20,8 @@ import { ProductUserDto } from './dto/response/product-user.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ManagerGuard } from 'src/auth/guards/manager.guard';
-import { FilesService } from 'src/files/files.service';
-import { FileImageDto } from 'src/files/dto/response/file-image.dto';
+import { FilesService } from 'src/common/files/files.service';
+import { FileImageDto } from 'src/common/files/dto/response/file-image.dto';
 import { CollectionProductModel } from './models/collection-product.model';
 import { PaginationSearchByCategoryDto } from './dto/request/pagination-search-by-category.dto';
 

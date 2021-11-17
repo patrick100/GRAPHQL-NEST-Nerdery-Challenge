@@ -1,5 +1,5 @@
 import { ObjectType } from '@nestjs/graphql';
-import { getCollectionDto } from 'src/utils/pagination.utils';
+import { getCollectionDto } from 'src/common/utils/pagination.utils';
 import { Category } from './category.model';
 
 @ObjectType('CollectionCategoryModel')
