@@ -21,6 +21,6 @@ export class ManagerGuard implements CanActivate {
 
   async validateUser(uuid: string): Promise<boolean> {
     const user: User = await this.usersService.findOne(uuid);
-    return user.role === 'MANAGER' ? true : false;
+    return user.role === 'MANAGER';
   }
 }

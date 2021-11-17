@@ -65,15 +65,15 @@ export class LikesService {
     }
   }
 
-  async incrementLikeCounter(productId: number) {
-    return this.prisma.product.update({
+  incrementLikeCounter(productId: number) {
+    this.prisma.product.update({
       where: { id: productId },
       data: { likeCounter: { increment: 1 } },
     });
   }
 
-  async decrementLikeCounter(productId: number) {
-    return this.prisma.product.update({
+  decrementLikeCounter(productId: number) {
+    this.prisma.product.update({
       where: { id: productId },
       data: { likeCounter: { decrement: 1 } },
     });

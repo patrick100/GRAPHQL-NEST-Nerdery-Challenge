@@ -14,7 +14,7 @@ import { CategoriesService } from 'src/categories/categories.service';
 import { CategoryDto } from 'src/categories/dto/response/category.dto';
 import { FilesService } from 'src/files/files.service';
 import { FileImage } from 'src/files/models/file-image';
-import TokenPayload from 'src/interfaces/token-payload.interface';
+import TokenPayload from 'src/common/interfaces/token-payload.interface';
 import { CreateProductInput } from './dto/input/create-product.input';
 import { ModifyProductInput } from './dto/input/modify-product.input';
 import { SearchByCategoryDto } from './dto/request/search-by-category.dto';
