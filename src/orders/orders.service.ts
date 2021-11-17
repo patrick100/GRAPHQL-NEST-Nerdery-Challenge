@@ -216,7 +216,7 @@ export class OrdersService {
 
   async order(
     orderWhereUniqueInput: Prisma.OrderWhereUniqueInput,
-  ): Promise<Order | null> {
+  ): Promise<Order> {
     const order = await this.prisma.order.findUnique({
       where: orderWhereUniqueInput,
     });

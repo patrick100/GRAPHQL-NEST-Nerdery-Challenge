@@ -9,16 +9,14 @@ type User {
   email: String
 }
 
+type ResponseMessage {
+  message: String!
+  code: Float!
+}
+
 type UserToken {
   token: String!
   user: User
-}
-
-type Category {
-  uuid: String!
-  name: String!
-  description: String
-  isEnabled: Boolean
 }
 
 type Pagination {
@@ -29,16 +27,16 @@ type Pagination {
   totalPages: Int
 }
 
+type Category {
+  uuid: String!
+  name: String!
+  description: String
+  isEnabled: Boolean
+}
+
 type CollectionCategoryModel {
   edges: [Category!]
   pageInfo: Pagination!
-}
-
-type FileImage {
-  uuid: String!
-  productId: String!
-  key: String!
-  url: String!
 }
 
 type Product {
@@ -57,6 +55,13 @@ type Product {
 type CollectionProductModel {
   edges: [Product!]
   pageInfo: Pagination!
+}
+
+type FileImage {
+  uuid: String!
+  productId: String!
+  key: String!
+  url: String!
 }
 
 type Detail {
@@ -90,7 +95,7 @@ type Query {
   user(uuid: String!): User!
   categories(pagination: PaginationQueryInput!): CollectionCategoryModel
   category(uuid: String!): Category
-  products(category: SearchByCategoryDto, pagination: PaginationQueryInput!): CollectionProductModel
+  products(category: SearchByCategoryInput, pagination: PaginationQueryInput!): CollectionProductModel
   product(uuid: String!): Product
   getImagesProduct(uuid: String!): [FileImage!]!
   cartOfUser: Order
@@ -104,7 +109,7 @@ input PaginationQueryInput {
   perPage: Int = 2
 }
 
-input SearchByCategoryDto {
+input SearchByCategoryInput {
   categoryUuid: String!
 }
 
@@ -114,9 +119,9 @@ type Mutation {
   deleteMe: User!
   signUp(input: CreateUserInput!): User!
   signIn(input: SignInInput!): UserToken!
-  verifyEmail(input: VerifyEmailInput!): Boolean
-  sendTokenToResetPassword(input: SendTokenResetPasswordInput!): Boolean
-  resetPassword(input: ResetPasswordInput!): Boolean
+  verifyEmail(input: VerifyEmailInput!): ResponseMessage
+  sendTokenToResetPassword(input: SendTokenResetPasswordInput!): ResponseMessage
+  resetPassword(input: ResetPasswordInput!): ResponseMessage
   signOut: Boolean
   createCategory(createCategoryData: CreateCategoryInput!): Category!
   modifyCategory(modifyCategoryData: ModifyCategoryInput!, uuid: String!): Category!
@@ -127,8 +132,8 @@ type Mutation {
   disableProduct(uuid: String!): Product!
   deleteProduct(uuid: String!): Product!
   uploadImgProduct(uuid: String!): FileImage!
-  giveLikeProduct(uuid: String!): Boolean
-  removeLikeProduct(uuid: String!): Boolean
+  giveLikeProduct(uuid: String!): ResponseMessage
+  removeLikeProduct(uuid: String!): ResponseMessage
   addProductToCart(productData: ProductToCartInput!, cartUuid: String!): Detail!
   cartToOrders(cartUuid: String!): Order
 }

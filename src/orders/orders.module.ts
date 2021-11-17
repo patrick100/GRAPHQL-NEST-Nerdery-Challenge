@@ -8,6 +8,7 @@ import { ProductsModule } from 'src/products/products.module';
 import { UsersModule } from 'src/users/users.module';
 import { OrdersResolver } from './orders.resolver';
 import { OrdersService } from './orders.service';
+import { OrdersController } from './orders.controller';
 
 @Module({
   providers: [OrdersResolver, PaginationService, OrdersService, FilesService],
@@ -20,5 +21,6 @@ import { OrdersService } from './orders.service';
     OrdersModule,
   ],
   exports: [OrdersService],
+  controllers: [OrdersController],
 })
 export class OrdersModule {}
