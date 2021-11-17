@@ -8,6 +8,8 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { PaginationService } from 'src/common/services/pagination.service';
 import { CategoryDto } from './dto/response/category.dto';
 import { CollectionCategoryModel } from './models/collection-category.model';
+import { CreateCategoryDto } from './dto/request/create-category.dto';
+import { ModifyCategoryDto } from './dto/request/modify-category.dto';
 
 @Injectable()
 export class CategoriesService {
@@ -57,7 +59,7 @@ export class CategoriesService {
     });
   }
 
-  async createCategory(data: Prisma.CategoryCreateInput): Promise<Category> {
+  async createCategory(data: CreateCategoryDto): Promise<Category> {
     return this.prisma.category.create({
       data,
     });
@@ -65,7 +67,7 @@ export class CategoriesService {
 
   async modifyCategory(
     categoryWhereUniqueInput: Prisma.CategoryWhereUniqueInput,
-    data: Prisma.CategoryUpdateInput,
+    data: ModifyCategoryDto,
   ): Promise<Category> {
     const existCategory = await this.category(categoryWhereUniqueInput);
     if (!existCategory) {

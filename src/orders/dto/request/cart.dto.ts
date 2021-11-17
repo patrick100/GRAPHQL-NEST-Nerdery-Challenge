@@ -1,9 +1,11 @@
 // import { Status } from ".prisma/client";
 
-import { IsNumber } from 'class-validator';
+import { IsNumber, IsOptional } from 'class-validator';
 
 export class CartDto {
   @IsNumber()
-  readonly userId: number;
-  //readonly status: 'ONCART';
+  readonly clientId: number;
+
+  @IsOptional()
+  readonly status: 'ONCART';
 }
