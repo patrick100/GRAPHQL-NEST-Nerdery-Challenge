@@ -1,4 +1,3 @@
-import { Product } from '.prisma/client';
 import {
   Body,
   Controller,
@@ -8,23 +7,23 @@ import {
   Param,
   Patch,
   Post,
-  Query,
   UseGuards,
   Request,
+  Query,
 } from '@nestjs/common';
-import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { CreateProductDto } from './dto/request/create-product.dto';
 import { ModifyProductDto } from './dto/request/modify-product.dto';
 import { ProductsService } from './products.service';
 import { plainToClass } from 'class-transformer';
 import { ProductDto } from './dto/response/product.dto';
 import { ProductUserDto } from './dto/response/product-user.dto';
-import { QueueCollectionDto } from 'src/common/dto/queue-collection.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ManagerGuard } from 'src/auth/guards/manager.guard';
 import { FilesService } from 'src/files/files.service';
 import { FileImageDto } from 'src/files/dto/response/file-image.dto';
+import { CollectionProductModel } from './models/collection-product.model';
+import { PaginationSearchByCategoryDto } from './dto/request/pagination-search-by-category.dto';
 
 @ApiTags('Products')
 @Controller('products')
@@ -34,13 +33,16 @@ export class ProductsController {
     private readonly fileService: FilesService,
   ) {}
   @Get()
-  // async products(
-  //   @Query() paginationQuery: PaginationQueryDto,
-  // ): Promise<QueueCollectionDto> {
-  //   const products = await this.productService.products(paginationQuery);
+  async products(
+    @Query() paginationQuery: PaginationSearchByCategoryDto,
+  ): Promise<CollectionProductModel> {
+    const products = await this.productService.collectionProductsForController(
+      paginationQuery,
+    );
 
-  //   return products;
-  // }
+    return products;
+  }
+
   @Get(':productId')
   async product(
     @Param('productId') productId: string,

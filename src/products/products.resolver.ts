@@ -17,7 +17,7 @@ import { FileImage } from 'src/files/models/file-image';
 import TokenPayload from 'src/interfaces/token-payload.interface';
 import { CreateProductInput } from './dto/input/create-product.input';
 import { ModifyProductInput } from './dto/input/modify-product.input';
-import { SearchByCategoryDto } from './dto/request/search-by-category.dto';
+import { SearchByCategoryInput } from './dto/input/search-by-category.input';
 import { ProductDto } from './dto/response/product.dto';
 import { CollectionProductModel } from './models/collection-product.model';
 import { Product } from './models/product.model';
@@ -36,7 +36,7 @@ export class ProductsResolver {
   async products(
     @Args('pagination') paginationQuery: PaginationQueryInput,
     @Args('category', { nullable: true })
-    searchByCategory: SearchByCategoryDto,
+    searchByCategory: SearchByCategoryInput,
   ): Promise<CollectionProductModel> {
     return this.productService.collectionProducts(
       paginationQuery,

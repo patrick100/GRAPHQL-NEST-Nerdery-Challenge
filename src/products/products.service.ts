@@ -9,10 +9,11 @@ import { PaginationService } from '../common/services/pagination.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { plainToClass } from 'class-transformer';
 import { CategoriesService } from 'src/categories/categories.service';
-import { SearchByCategoryDto } from './dto/request/search-by-category.dto';
+import { SearchByCategoryInput } from './dto/input/search-by-category.input';
 import { ProductDto } from './dto/response/product.dto';
 import { CollectionProductModel } from './models/collection-product.model';
 import userInfoEmail from 'src/interfaces/user-emai.interface';
+import { PaginationSearchByCategoryDto } from './dto/request/pagination-search-by-category.dto';
 
 @Injectable()
 export class ProductsService {
@@ -24,7 +25,7 @@ export class ProductsService {
 
   async collectionProducts(
     params: PaginationQueryDto,
-    categoryData: SearchByCategoryDto,
+    categoryData: SearchByCategoryInput,
   ): Promise<CollectionProductModel> {
     const edges = await this.products(params, categoryData);
     const pageInfo = await this.productsPageInfo(params, categoryData);
@@ -32,9 +33,22 @@ export class ProductsService {
     return { edges, pageInfo };
   }
 
+  async collectionProductsForController(
+    params: PaginationSearchByCategoryDto,
+  ): Promise<CollectionProductModel> {
+    const { page, perPage } = params;
+    const { category: categoryData } = params;
+    const edges = await this.products(params, { categoryUuid: categoryData });
+    const pageInfo = await this.productsPageInfo(params, {
+      categoryUuid: categoryData,
+    });
+
+    return { edges, pageInfo };
+  }
+
   async products(
     params: PaginationQueryDto,
-    categoryData: SearchByCategoryDto,
+    categoryData: SearchByCategoryInput,
   ): Promise<ProductDto[]> {
     const { categoryUuid } = categoryData;
     const { skip, take } = this.pagination.paginatedHelper(params);
@@ -65,7 +79,7 @@ export class ProductsService {
 
   async productsPageInfo(
     params: PaginationQueryDto,
-    categoryData: SearchByCategoryDto,
+    categoryData: SearchByCategoryInput,
   ): Promise<PaginationDto> {
     const { categoryUuid } = categoryData;
     const { page, perPage } = params;
@@ -98,7 +112,7 @@ export class ProductsService {
 
   async product(
     productWhereUniqueInput: Prisma.ProductWhereUniqueInput,
-  ): Promise<Product | null> {
+  ): Promise<ProductDto> {
     const product = await this.prisma.product.findUnique({
       where: productWhereUniqueInput,
     });
@@ -106,7 +120,7 @@ export class ProductsService {
       throw new HttpException('Product Not Found', HttpStatus.NOT_FOUND);
     }
 
-    return product;
+    return plainToClass(ProductDto, product);
   }
 
   async createProduct(productData: CreateProductDto): Promise<Product> {
