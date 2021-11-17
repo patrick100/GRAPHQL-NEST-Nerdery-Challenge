@@ -45,9 +45,8 @@ describe('ProductsService', () => {
   });
 
   afterAll(async () => {
-    // await prismaService.clearDatabase();
+    await prismaService.clearDatabase();
     await prismaService.$disconnect();
-    // await module.close();
   });
 
   it('should be defined', () => {
@@ -194,7 +193,7 @@ describe('ProductsService', () => {
     });
   });
 
-  describe('deleteCategory', () => {
+  describe('deleteProduct', () => {
     it('should throw an exception if product doesnt exist', async () => {
       await expect(
         productService.deleteProduct({ uuid: faker.datatype.uuid() }),

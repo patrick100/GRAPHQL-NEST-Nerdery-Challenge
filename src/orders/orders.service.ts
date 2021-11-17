@@ -24,14 +24,18 @@ export class OrdersService {
 
   async getOrderId(
     orderWhereUniqueInput: Prisma.OrderWhereUniqueInput,
-  ): Promise<number | null> {
-    const { id } = await this.prisma.order.findUnique({
-      where: orderWhereUniqueInput,
-    });
-    if (!id) {
-      throw new HttpException('Order Not Found', HttpStatus.NOT_FOUND);
+  ): Promise<number> {
+    let id: number;
+    try {
+      ({ id } = await this.prisma.order.findUnique({
+        where: orderWhereUniqueInput,
+      }));
+      return id;
+    } catch (e) {
+      if (!id) {
+        throw new HttpException('Order Not Found', HttpStatus.NOT_FOUND);
+      }
     }
-    return id;
   }
 
   async cart(
@@ -154,15 +158,12 @@ export class OrdersService {
   }
 
   async updateStock(cartUuid: string): Promise<boolean> {
-    // const detailService = this.moduleRef.get(DetailsOrderService, {
-    //   strict: false,
-    // });
     const cartDetails: OrderDetail[] = await this.detailsOrderService.details({
       uuid: cartUuid,
     });
+
     try {
       cartDetails.forEach(async (detail) => {
-        console.log(detail.productId);
         const query: Product = await this.prisma.product.update({
           where: {
             id: detail.productId,
@@ -173,7 +174,6 @@ export class OrdersService {
             },
           },
         });
-        console.log(query);
 
         if (query.stock <= 3) {
           await this.notifyUserLowStock(query);
@@ -196,7 +196,7 @@ export class OrdersService {
     // get product image
     const imageProduct: FileImageDto[] =
       await this.fileService.getImagesbyProductId(product.uuid);
-    // // TODO Use SignedURL
+
     await usersWhoLikedProduct.forEach((user) => {
       emailData = {
         to: user.user.email,
@@ -208,7 +208,7 @@ export class OrdersService {
           productBrand: product.brand,
         },
       };
-      console.log(emailData);
+
       sendEmailLowCost(emailData);
     });
   }
@@ -221,9 +221,11 @@ export class OrdersService {
     const order = await this.prisma.order.findUnique({
       where: orderWhereUniqueInput,
     });
+
     if (!order) {
       throw new HttpException('Order Not Found', HttpStatus.NOT_FOUND);
     }
+
     return order;
   }
 
@@ -231,6 +233,7 @@ export class OrdersService {
     userId: Prisma.OrderWhereUniqueInput,
   ): Promise<OrderDto[]> {
     const user = await this.user.user({ uuid: userId.uuid });
+
     if (!user) {
       throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
     }
